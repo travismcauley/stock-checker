@@ -32,8 +32,9 @@ export function StoreSearch() {
         showToast('No stores found in that area', 'info')
       }
     } catch (err) {
+      console.error('Store search error:', err)
       const message = err instanceof Error ? err.message : 'Failed to search stores'
-      setError(getFriendlyError(message))
+      setError(message)
       setStores([])
     } finally {
       setLoading(false)
@@ -49,16 +50,6 @@ export function StoreSearch() {
     if (e.key === 'Enter') {
       handleSearch()
     }
-  }
-
-  const getFriendlyError = (message: string): string => {
-    if (message.includes('fetch') || message.includes('network')) {
-      return 'Unable to connect to the server. Please check your internet connection.'
-    }
-    if (message.includes('timeout')) {
-      return 'The request took too long. Please try again.'
-    }
-    return 'Something went wrong. Please try again.'
   }
 
   return (

@@ -31,8 +31,9 @@ export function ProductSearch() {
         showToast('No products found matching your search', 'info')
       }
     } catch (err) {
+      console.error('Product search error:', err)
       const message = err instanceof Error ? err.message : 'Failed to search products'
-      setError(getFriendlyError(message))
+      setError(message)
       setProducts([])
     } finally {
       setLoading(false)
@@ -48,16 +49,6 @@ export function ProductSearch() {
     if (e.key === 'Enter') {
       handleSearch()
     }
-  }
-
-  const getFriendlyError = (message: string): string => {
-    if (message.includes('fetch') || message.includes('network')) {
-      return 'Unable to connect to the server. Please check your internet connection.'
-    }
-    if (message.includes('timeout')) {
-      return 'The request took too long. Please try again.'
-    }
-    return 'Something went wrong. Please try again.'
   }
 
   const formatPrice = (price: number) => {
