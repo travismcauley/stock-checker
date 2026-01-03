@@ -255,8 +255,9 @@ func (c *APIClient) SearchStores(ctx context.Context, postalCode string, radiusM
 
 // SearchProducts searches for products by keyword
 func (c *APIClient) SearchProducts(ctx context.Context, query string) ([]Product, error) {
+	// Use PathEscape instead of QueryEscape because Best Buy API needs %20 for spaces, not +
 	endpoint := fmt.Sprintf("%s/products(search=%s)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=50&apiKey=%s",
-		c.baseURL, url.QueryEscape(query), c.apiKey)
+		c.baseURL, url.PathEscape(query), c.apiKey)
 
 	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
