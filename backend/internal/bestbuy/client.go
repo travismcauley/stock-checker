@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 	"sync"
 	"time"
 )
@@ -129,8 +130,8 @@ func NewAPIClient(apiKey string) *APIClient {
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},
-		minInterval:   200 * time.Millisecond, // Max 5 requests per second
-		maxRetries:    3,
+		minInterval:   350 * time.Millisecond, // ~3 requests per second (safer for Best Buy's rate limits)
+		maxRetries:    5,
 		retryBaseWait: 1 * time.Second,
 	}
 }
@@ -175,8 +176,11 @@ func (c *APIClient) doRequest(ctx context.Context, endpoint string) ([]byte, err
 			continue
 		}
 
-		// Handle rate limiting (429 Too Many Requests)
-		if resp.StatusCode == http.StatusTooManyRequests {
+		// Handle rate limiting (429 Too Many Requests or 403 with rate limit message)
+		isRateLimited := resp.StatusCode == http.StatusTooManyRequests ||
+			(resp.StatusCode == http.StatusForbidden && strings.Contains(string(body), "per second limit"))
+
+		if isRateLimited {
 			retryAfter := c.retryBaseWait * time.Duration(1<<attempt) // Exponential backoff
 
 			// Check for Retry-After header
@@ -186,6 +190,7 @@ func (c *APIClient) doRequest(ctx context.Context, endpoint string) ([]byte, err
 				}
 			}
 
+			log.Printf("Rate limited, waiting %v before retry (attempt %d/%d)", retryAfter, attempt+1, c.maxRetries)
 			lastErr = &RateLimitError{RetryAfter: retryAfter}
 
 			select {
@@ -200,7 +205,7 @@ func (c *APIClient) doRequest(ctx context.Context, endpoint string) ([]byte, err
 		if resp.StatusCode != http.StatusOK {
 			lastErr = fmt.Errorf("API returned status %d: %s", resp.StatusCode, string(body))
 
-			// Don't retry on client errors (except rate limiting)
+			// Don't retry on client errors (except rate limiting handled above)
 			if resp.StatusCode >= 400 && resp.StatusCode < 500 {
 				return nil, lastErr
 			}
@@ -446,6 +451,12 @@ func (c *APIClient) CheckAvailability(ctx context.Context, sku string, storeIDs 
 
 	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
+		// Check if it's a 403 Forbidden error (Best Buy blocks availability for some products)
+		if strings.Contains(err.Error(), "403") {
+			log.Printf("CheckAvailability: Access forbidden for SKU %s (likely restricted product)", sku)
+			// Return empty availability with a note that it's restricted
+			return []StoreAvailability{}, nil
+		}
 		log.Printf("CheckAvailability error: %v", err)
 		return nil, err
 	}
