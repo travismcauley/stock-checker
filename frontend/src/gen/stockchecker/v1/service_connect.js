@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { AddMyProductRequest, AddMyProductResponse, AddMyStoreRequest, AddMyStoreResponse, CheckStockRequest, CheckStockResponse, GetCurrentUserRequest, GetCurrentUserResponse, GetMyProductsRequest, GetMyProductsResponse, GetMyStoresRequest, GetMyStoresResponse, RemoveMyProductRequest, RemoveMyProductResponse, RemoveMyStoreRequest, RemoveMyStoreResponse, SearchProductsRequest, SearchProductsResponse, SearchStoresRequest, SearchStoresResponse } from "./service_pb.js";
+import { AddMyProductRequest, AddMyProductResponse, AddMyStoreRequest, AddMyStoreResponse, BrowsePokemonProductsRequest, BrowsePokemonProductsResponse, CheckStockRequest, CheckStockResponse, GetCurrentUserRequest, GetCurrentUserResponse, GetMyProductsRequest, GetMyProductsResponse, GetMyStoresRequest, GetMyStoresResponse, RemoveMyProductRequest, RemoveMyProductResponse, RemoveMyStoreRequest, RemoveMyStoreResponse, SearchProductsRequest, SearchProductsResponse, SearchStoresRequest, SearchStoresResponse } from "./service_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -122,6 +122,17 @@ export const StockCheckerService = {
       name: "RemoveMyProduct",
       I: RemoveMyProductRequest,
       O: RemoveMyProductResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * BrowsePokemonProducts returns Pokemon products from Best Buy's trading cards category
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.BrowsePokemonProducts
+     */
+    browsePokemonProducts: {
+      name: "BrowsePokemonProducts",
+      I: BrowsePokemonProductsRequest,
+      O: BrowsePokemonProductsResponse,
       kind: MethodKind.Unary,
     },
   }

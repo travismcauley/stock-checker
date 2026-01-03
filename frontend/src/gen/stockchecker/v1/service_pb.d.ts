@@ -519,6 +519,38 @@ export declare type RemoveMyProductResponse = Message<"stockchecker.v1.RemoveMyP
 export declare const RemoveMyProductResponseSchema: GenMessage<RemoveMyProductResponse>;
 
 /**
+ * BrowsePokemonProductsRequest is empty
+ *
+ * @generated from message stockchecker.v1.BrowsePokemonProductsRequest
+ */
+export declare type BrowsePokemonProductsRequest = Message<"stockchecker.v1.BrowsePokemonProductsRequest"> & {
+};
+
+/**
+ * Describes the message stockchecker.v1.BrowsePokemonProductsRequest.
+ * Use `create(BrowsePokemonProductsRequestSchema)` to create a new message.
+ */
+export declare const BrowsePokemonProductsRequestSchema: GenMessage<BrowsePokemonProductsRequest>;
+
+/**
+ * BrowsePokemonProductsResponse returns Pokemon products from the trading cards category
+ *
+ * @generated from message stockchecker.v1.BrowsePokemonProductsResponse
+ */
+export declare type BrowsePokemonProductsResponse = Message<"stockchecker.v1.BrowsePokemonProductsResponse"> & {
+  /**
+   * @generated from field: repeated stockchecker.v1.Product products = 1;
+   */
+  products: Product[];
+};
+
+/**
+ * Describes the message stockchecker.v1.BrowsePokemonProductsResponse.
+ * Use `create(BrowsePokemonProductsResponseSchema)` to create a new message.
+ */
+export declare const BrowsePokemonProductsResponseSchema: GenMessage<BrowsePokemonProductsResponse>;
+
+/**
  * StockCheckerService provides stock checking functionality
  *
  * @generated from service stockchecker.v1.StockCheckerService
@@ -623,6 +655,16 @@ export declare const StockCheckerService: GenService<{
     methodKind: "unary";
     input: typeof RemoveMyProductRequestSchema;
     output: typeof RemoveMyProductResponseSchema;
+  },
+  /**
+   * BrowsePokemonProducts returns Pokemon products from Best Buy's trading cards category
+   *
+   * @generated from rpc stockchecker.v1.StockCheckerService.BrowsePokemonProducts
+   */
+  browsePokemonProducts: {
+    methodKind: "unary";
+    input: typeof BrowsePokemonProductsRequestSchema;
+    output: typeof BrowsePokemonProductsResponseSchema;
   },
 }>;
 

@@ -338,3 +338,31 @@ func (h *StockCheckerHandler) RemoveMyProduct(
 
 	return connect.NewResponse(&stockcheckerv1.RemoveMyProductResponse{}), nil
 }
+
+// BrowsePokemonProducts returns Pokemon products from Best Buy's trading cards category
+func (h *StockCheckerHandler) BrowsePokemonProducts(
+	ctx context.Context,
+	req *connect.Request[stockcheckerv1.BrowsePokemonProductsRequest],
+) (*connect.Response[stockcheckerv1.BrowsePokemonProductsResponse], error) {
+	products, err := h.bbClient.BrowsePokemonProducts(ctx)
+	if err != nil {
+		log.Printf("Error browsing Pokemon products: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	// Convert to protobuf messages
+	pbProducts := make([]*stockcheckerv1.Product, 0, len(products))
+	for _, product := range products {
+		pbProducts = append(pbProducts, &stockcheckerv1.Product{
+			Sku:          fmt.Sprintf("%d", product.SKU),
+			Name:         product.Name,
+			SalePrice:    product.SalePrice,
+			ThumbnailUrl: product.ThumbnailImage,
+			ProductUrl:   product.URL,
+		})
+	}
+
+	return connect.NewResponse(&stockcheckerv1.BrowsePokemonProductsResponse{
+		Products: pbProducts,
+	}), nil
+}

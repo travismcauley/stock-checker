@@ -63,6 +63,9 @@ const (
 	// StockCheckerServiceRemoveMyProductProcedure is the fully-qualified name of the
 	// StockCheckerService's RemoveMyProduct RPC.
 	StockCheckerServiceRemoveMyProductProcedure = "/stockchecker.v1.StockCheckerService/RemoveMyProduct"
+	// StockCheckerServiceBrowsePokemonProductsProcedure is the fully-qualified name of the
+	// StockCheckerService's BrowsePokemonProducts RPC.
+	StockCheckerServiceBrowsePokemonProductsProcedure = "/stockchecker.v1.StockCheckerService/BrowsePokemonProducts"
 )
 
 // StockCheckerServiceClient is a client for the stockchecker.v1.StockCheckerService service.
@@ -87,6 +90,8 @@ type StockCheckerServiceClient interface {
 	AddMyProduct(context.Context, *connect.Request[v1.AddMyProductRequest]) (*connect.Response[v1.AddMyProductResponse], error)
 	// RemoveMyProduct removes a product from the user's list
 	RemoveMyProduct(context.Context, *connect.Request[v1.RemoveMyProductRequest]) (*connect.Response[v1.RemoveMyProductResponse], error)
+	// BrowsePokemonProducts returns Pokemon products from Best Buy's trading cards category
+	BrowsePokemonProducts(context.Context, *connect.Request[v1.BrowsePokemonProductsRequest]) (*connect.Response[v1.BrowsePokemonProductsResponse], error)
 }
 
 // NewStockCheckerServiceClient constructs a client for the stockchecker.v1.StockCheckerService
@@ -160,21 +165,28 @@ func NewStockCheckerServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(stockCheckerServiceMethods.ByName("RemoveMyProduct")),
 			connect.WithClientOptions(opts...),
 		),
+		browsePokemonProducts: connect.NewClient[v1.BrowsePokemonProductsRequest, v1.BrowsePokemonProductsResponse](
+			httpClient,
+			baseURL+StockCheckerServiceBrowsePokemonProductsProcedure,
+			connect.WithSchema(stockCheckerServiceMethods.ByName("BrowsePokemonProducts")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // stockCheckerServiceClient implements StockCheckerServiceClient.
 type stockCheckerServiceClient struct {
-	searchStores    *connect.Client[v1.SearchStoresRequest, v1.SearchStoresResponse]
-	searchProducts  *connect.Client[v1.SearchProductsRequest, v1.SearchProductsResponse]
-	checkStock      *connect.Client[v1.CheckStockRequest, v1.CheckStockResponse]
-	getCurrentUser  *connect.Client[v1.GetCurrentUserRequest, v1.GetCurrentUserResponse]
-	getMyStores     *connect.Client[v1.GetMyStoresRequest, v1.GetMyStoresResponse]
-	addMyStore      *connect.Client[v1.AddMyStoreRequest, v1.AddMyStoreResponse]
-	removeMyStore   *connect.Client[v1.RemoveMyStoreRequest, v1.RemoveMyStoreResponse]
-	getMyProducts   *connect.Client[v1.GetMyProductsRequest, v1.GetMyProductsResponse]
-	addMyProduct    *connect.Client[v1.AddMyProductRequest, v1.AddMyProductResponse]
-	removeMyProduct *connect.Client[v1.RemoveMyProductRequest, v1.RemoveMyProductResponse]
+	searchStores          *connect.Client[v1.SearchStoresRequest, v1.SearchStoresResponse]
+	searchProducts        *connect.Client[v1.SearchProductsRequest, v1.SearchProductsResponse]
+	checkStock            *connect.Client[v1.CheckStockRequest, v1.CheckStockResponse]
+	getCurrentUser        *connect.Client[v1.GetCurrentUserRequest, v1.GetCurrentUserResponse]
+	getMyStores           *connect.Client[v1.GetMyStoresRequest, v1.GetMyStoresResponse]
+	addMyStore            *connect.Client[v1.AddMyStoreRequest, v1.AddMyStoreResponse]
+	removeMyStore         *connect.Client[v1.RemoveMyStoreRequest, v1.RemoveMyStoreResponse]
+	getMyProducts         *connect.Client[v1.GetMyProductsRequest, v1.GetMyProductsResponse]
+	addMyProduct          *connect.Client[v1.AddMyProductRequest, v1.AddMyProductResponse]
+	removeMyProduct       *connect.Client[v1.RemoveMyProductRequest, v1.RemoveMyProductResponse]
+	browsePokemonProducts *connect.Client[v1.BrowsePokemonProductsRequest, v1.BrowsePokemonProductsResponse]
 }
 
 // SearchStores calls stockchecker.v1.StockCheckerService.SearchStores.
@@ -227,6 +239,11 @@ func (c *stockCheckerServiceClient) RemoveMyProduct(ctx context.Context, req *co
 	return c.removeMyProduct.CallUnary(ctx, req)
 }
 
+// BrowsePokemonProducts calls stockchecker.v1.StockCheckerService.BrowsePokemonProducts.
+func (c *stockCheckerServiceClient) BrowsePokemonProducts(ctx context.Context, req *connect.Request[v1.BrowsePokemonProductsRequest]) (*connect.Response[v1.BrowsePokemonProductsResponse], error) {
+	return c.browsePokemonProducts.CallUnary(ctx, req)
+}
+
 // StockCheckerServiceHandler is an implementation of the stockchecker.v1.StockCheckerService
 // service.
 type StockCheckerServiceHandler interface {
@@ -250,6 +267,8 @@ type StockCheckerServiceHandler interface {
 	AddMyProduct(context.Context, *connect.Request[v1.AddMyProductRequest]) (*connect.Response[v1.AddMyProductResponse], error)
 	// RemoveMyProduct removes a product from the user's list
 	RemoveMyProduct(context.Context, *connect.Request[v1.RemoveMyProductRequest]) (*connect.Response[v1.RemoveMyProductResponse], error)
+	// BrowsePokemonProducts returns Pokemon products from Best Buy's trading cards category
+	BrowsePokemonProducts(context.Context, *connect.Request[v1.BrowsePokemonProductsRequest]) (*connect.Response[v1.BrowsePokemonProductsResponse], error)
 }
 
 // NewStockCheckerServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -319,6 +338,12 @@ func NewStockCheckerServiceHandler(svc StockCheckerServiceHandler, opts ...conne
 		connect.WithSchema(stockCheckerServiceMethods.ByName("RemoveMyProduct")),
 		connect.WithHandlerOptions(opts...),
 	)
+	stockCheckerServiceBrowsePokemonProductsHandler := connect.NewUnaryHandler(
+		StockCheckerServiceBrowsePokemonProductsProcedure,
+		svc.BrowsePokemonProducts,
+		connect.WithSchema(stockCheckerServiceMethods.ByName("BrowsePokemonProducts")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/stockchecker.v1.StockCheckerService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case StockCheckerServiceSearchStoresProcedure:
@@ -341,6 +366,8 @@ func NewStockCheckerServiceHandler(svc StockCheckerServiceHandler, opts ...conne
 			stockCheckerServiceAddMyProductHandler.ServeHTTP(w, r)
 		case StockCheckerServiceRemoveMyProductProcedure:
 			stockCheckerServiceRemoveMyProductHandler.ServeHTTP(w, r)
+		case StockCheckerServiceBrowsePokemonProductsProcedure:
+			stockCheckerServiceBrowsePokemonProductsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -388,4 +415,8 @@ func (UnimplementedStockCheckerServiceHandler) AddMyProduct(context.Context, *co
 
 func (UnimplementedStockCheckerServiceHandler) RemoveMyProduct(context.Context, *connect.Request[v1.RemoveMyProductRequest]) (*connect.Response[v1.RemoveMyProductResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.RemoveMyProduct is not implemented"))
+}
+
+func (UnimplementedStockCheckerServiceHandler) BrowsePokemonProducts(context.Context, *connect.Request[v1.BrowsePokemonProductsRequest]) (*connect.Response[v1.BrowsePokemonProductsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.BrowsePokemonProducts is not implemented"))
 }

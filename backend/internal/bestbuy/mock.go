@@ -335,3 +335,18 @@ func (c *MockClient) CheckAvailability(ctx context.Context, sku string, storeIDs
 
 	return availability, nil
 }
+
+// SearchProductsInCategory searches for products within a specific category
+func (c *MockClient) SearchProductsInCategory(ctx context.Context, categoryID string, query string) ([]Product, error) {
+	// For mock, just delegate to regular search
+	return c.SearchProducts(ctx, query)
+}
+
+// BrowsePokemonProducts returns Pokemon TCG products
+func (c *MockClient) BrowsePokemonProducts(ctx context.Context) ([]Product, error) {
+	if err := c.simulateLatency(ctx); err != nil {
+		return nil, err
+	}
+	// Return all mock products (they're all Pokemon)
+	return mockProducts, nil
+}

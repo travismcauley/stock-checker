@@ -128,6 +128,14 @@ message RemoveMyProductRequest {
 // RemoveMyProductResponse is empty on success
 message RemoveMyProductResponse {}
 
+// BrowsePokemonProductsRequest is empty
+message BrowsePokemonProductsRequest {}
+
+// BrowsePokemonProductsResponse returns Pokemon products from the trading cards category
+message BrowsePokemonProductsResponse {
+  repeated Product products = 1;
+}
+
 // StockCheckerService provides stock checking functionality
 service StockCheckerService {
   // SearchStores searches for Best Buy stores near a location
@@ -159,4 +167,7 @@ service StockCheckerService {
 
   // RemoveMyProduct removes a product from the user's list
   rpc RemoveMyProduct(RemoveMyProductRequest) returns (RemoveMyProductResponse);
+
+  // BrowsePokemonProducts returns Pokemon products from Best Buy's trading cards category
+  rpc BrowsePokemonProducts(BrowsePokemonProductsRequest) returns (BrowsePokemonProductsResponse);
 }

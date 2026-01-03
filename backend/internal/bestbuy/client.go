@@ -5,10 +5,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
+	"regexp"
 	"sync"
 	"time"
+)
+
+// Known category IDs for Best Buy
+const (
+	CategoryTradingCards = "pcmcat1604992984556" // Trading Cards category
 )
 
 // Client is the interface for Best Buy API operations
@@ -19,11 +26,17 @@ type Client interface {
 	// SearchProducts searches for products by keyword
 	SearchProducts(ctx context.Context, query string) ([]Product, error)
 
+	// SearchProductsInCategory searches for products within a category
+	SearchProductsInCategory(ctx context.Context, categoryID string, query string) ([]Product, error)
+
 	// GetProductBySKU gets a single product by its SKU
 	GetProductBySKU(ctx context.Context, sku string) (*Product, error)
 
 	// CheckAvailability checks product availability at specific stores
 	CheckAvailability(ctx context.Context, sku string, storeIDs []string) ([]StoreAvailability, error)
+
+	// BrowsePokemonProducts returns Pokemon TCG products from the trading cards category
+	BrowsePokemonProducts(ctx context.Context) ([]Product, error)
 }
 
 // Store represents a Best Buy store from the API
@@ -233,6 +246,8 @@ type availabilityResponse struct {
 
 // SearchStores searches for stores near a postal code
 func (c *APIClient) SearchStores(ctx context.Context, postalCode string, radiusMiles int) ([]Store, error) {
+	log.Printf("SearchStores called with postalCode: %s, radiusMiles: %d", postalCode, radiusMiles)
+
 	if radiusMiles <= 0 {
 		radiusMiles = 25
 	}
@@ -240,35 +255,61 @@ func (c *APIClient) SearchStores(ctx context.Context, postalCode string, radiusM
 	endpoint := fmt.Sprintf("%s/stores(area(%s,%d))?format=json&show=storeId,name,address,address2,city,region,postalCode,phone,distance,storeType,hours,hoursAmPm,gmtOffset,lat,lng&pageSize=50&apiKey=%s",
 		c.baseURL, url.QueryEscape(postalCode), radiusMiles, c.apiKey)
 
+	log.Printf("Searching stores with endpoint: %s", endpoint)
+
 	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
+		log.Printf("Store search error: %v", err)
 		return nil, err
 	}
 
 	var result storesResponse
 	if err := json.Unmarshal(body, &result); err != nil {
+		log.Printf("Failed to decode store search response: %v", err)
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
+	log.Printf("Store search returned %d results", len(result.Stores))
 	return result.Stores, nil
 }
 
-// SearchProducts searches for products by keyword
+// skuPattern matches strings that look like SKUs (6-8 digits)
+var skuPattern = regexp.MustCompile(`^\d{6,8}$`)
+
+// SearchProducts searches for products by keyword or SKU
 func (c *APIClient) SearchProducts(ctx context.Context, query string) ([]Product, error) {
+	log.Printf("SearchProducts called with query: %s", query)
+
+	// Check if the query looks like a SKU (6-8 digit number)
+	if skuPattern.MatchString(query) {
+		log.Printf("Query looks like a SKU, trying direct lookup first")
+		product, err := c.GetProductBySKU(ctx, query)
+		if err == nil && product != nil && product.SKU != 0 {
+			log.Printf("Found product by SKU: %s - %s", query, product.Name)
+			return []Product{*product}, nil
+		}
+		log.Printf("SKU lookup failed or returned empty, falling back to search: %v", err)
+	}
+
 	// Use PathEscape instead of QueryEscape because Best Buy API needs %20 for spaces, not +
 	endpoint := fmt.Sprintf("%s/products(search=%s)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=50&apiKey=%s",
 		c.baseURL, url.PathEscape(query), c.apiKey)
 
+	log.Printf("Searching products with endpoint: %s", endpoint)
+
 	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
+		log.Printf("Product search error: %v", err)
 		return nil, err
 	}
 
 	var result productsResponse
 	if err := json.Unmarshal(body, &result); err != nil {
+		log.Printf("Failed to decode product search response: %v", err)
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
+	log.Printf("Product search returned %d results", len(result.Products))
 	return result.Products, nil
 }
 
@@ -288,6 +329,45 @@ func (c *APIClient) GetProductBySKU(ctx context.Context, sku string) (*Product, 
 	}
 
 	return &product, nil
+}
+
+// SearchProductsInCategory searches for products within a specific category
+func (c *APIClient) SearchProductsInCategory(ctx context.Context, categoryID string, query string) ([]Product, error) {
+	log.Printf("SearchProductsInCategory called with categoryID: %s, query: %s", categoryID, query)
+
+	var endpoint string
+	if query != "" {
+		endpoint = fmt.Sprintf("%s/products(categoryPath.id=%s&search=%s)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=100&apiKey=%s",
+			c.baseURL, categoryID, url.PathEscape(query), c.apiKey)
+	} else {
+		endpoint = fmt.Sprintf("%s/products(categoryPath.id=%s)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=100&apiKey=%s",
+			c.baseURL, categoryID, c.apiKey)
+	}
+
+	log.Printf("Category search endpoint: %s", endpoint)
+
+	body, err := c.doRequest(ctx, endpoint)
+	if err != nil {
+		log.Printf("Category search error: %v", err)
+		return nil, err
+	}
+
+	var result productsResponse
+	if err := json.Unmarshal(body, &result); err != nil {
+		log.Printf("Failed to decode category search response: %v", err)
+		return nil, fmt.Errorf("failed to decode response: %w", err)
+	}
+
+	log.Printf("Category search returned %d results", len(result.Products))
+	return result.Products, nil
+}
+
+// BrowsePokemonProducts returns Pokemon TCG products from the trading cards category
+func (c *APIClient) BrowsePokemonProducts(ctx context.Context) ([]Product, error) {
+	log.Printf("BrowsePokemonProducts called")
+
+	// Search for Pokemon within the trading cards category
+	return c.SearchProductsInCategory(ctx, CategoryTradingCards, "pokemon")
 }
 
 // CheckAvailability checks product availability at specific stores

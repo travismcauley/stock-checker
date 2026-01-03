@@ -40,6 +40,30 @@ export function ProductSearch() {
     }
   }
 
+  const handleBrowsePokemon = async () => {
+    setLoading(true)
+    setError(null)
+    setHasSearched(true)
+    setQuery('')
+
+    try {
+      const response = await stockCheckerClient.browsePokemonProducts({})
+      setProducts(response.products)
+      if (response.products.length === 0) {
+        showToast('No Pokemon products found in Best Buy catalog', 'info')
+      } else {
+        showToast(`Found ${response.products.length} Pokemon products`, 'success')
+      }
+    } catch (err) {
+      console.error('Browse Pokemon error:', err)
+      const message = err instanceof Error ? err.message : 'Failed to browse Pokemon products'
+      setError(message)
+      setProducts([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleAddProduct = (product: Product) => {
     addProduct(product)
     showToast(`Added ${product.name.substring(0, 40)}...`, 'success')
@@ -89,9 +113,30 @@ export function ProductSearch() {
             )}
           </button>
         </div>
-        <p className="text-gray-500 text-sm mt-2">
-          Try: pokemon, prismatic evolutions, surging sparks, 151, paldean fates
-        </p>
+        <div className="flex flex-wrap items-center gap-2 mt-3">
+          <span className="text-gray-500 text-sm">Quick:</span>
+          <button
+            onClick={handleBrowsePokemon}
+            disabled={loading}
+            className="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-colors disabled:opacity-50"
+          >
+            Browse All Pokemon
+          </button>
+          <button
+            onClick={() => { setQuery('prismatic evolutions'); }}
+            disabled={loading}
+            className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors disabled:opacity-50"
+          >
+            Prismatic Evolutions
+          </button>
+          <button
+            onClick={() => { setQuery('surging sparks'); }}
+            disabled={loading}
+            className="px-3 py-1 text-sm bg-yellow-100 text-yellow-700 rounded-full hover:bg-yellow-200 transition-colors disabled:opacity-50"
+          >
+            Surging Sparks
+          </button>
+        </div>
       </div>
 
       {error && (

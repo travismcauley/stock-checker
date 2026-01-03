@@ -1205,6 +1205,88 @@ func (*RemoveMyProductResponse) Descriptor() ([]byte, []int) {
 	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{23}
 }
 
+// BrowsePokemonProductsRequest is empty
+type BrowsePokemonProductsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BrowsePokemonProductsRequest) Reset() {
+	*x = BrowsePokemonProductsRequest{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BrowsePokemonProductsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BrowsePokemonProductsRequest) ProtoMessage() {}
+
+func (x *BrowsePokemonProductsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BrowsePokemonProductsRequest.ProtoReflect.Descriptor instead.
+func (*BrowsePokemonProductsRequest) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{24}
+}
+
+// BrowsePokemonProductsResponse returns Pokemon products from the trading cards category
+type BrowsePokemonProductsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Products      []*Product             `protobuf:"bytes,1,rep,name=products,proto3" json:"products,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BrowsePokemonProductsResponse) Reset() {
+	*x = BrowsePokemonProductsResponse{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BrowsePokemonProductsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BrowsePokemonProductsResponse) ProtoMessage() {}
+
+func (x *BrowsePokemonProductsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BrowsePokemonProductsResponse.ProtoReflect.Descriptor instead.
+func (*BrowsePokemonProductsResponse) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *BrowsePokemonProductsResponse) GetProducts() []*Product {
+	if x != nil {
+		return x.Products
+	}
+	return nil
+}
+
 var File_stockchecker_v1_service_proto protoreflect.FileDescriptor
 
 const file_stockchecker_v1_service_proto_rawDesc = "" +
@@ -1275,7 +1357,10 @@ const file_stockchecker_v1_service_proto_rawDesc = "" +
 	"\x14AddMyProductResponse\"*\n" +
 	"\x16RemoveMyProductRequest\x12\x10\n" +
 	"\x03sku\x18\x01 \x01(\tR\x03sku\"\x19\n" +
-	"\x17RemoveMyProductResponse2\xc3\a\n" +
+	"\x17RemoveMyProductResponse\"\x1e\n" +
+	"\x1cBrowsePokemonProductsRequest\"U\n" +
+	"\x1dBrowsePokemonProductsResponse\x124\n" +
+	"\bproducts\x18\x01 \x03(\v2\x18.stockchecker.v1.ProductR\bproducts2\xbb\b\n" +
 	"\x13StockCheckerService\x12[\n" +
 	"\fSearchStores\x12$.stockchecker.v1.SearchStoresRequest\x1a%.stockchecker.v1.SearchStoresResponse\x12a\n" +
 	"\x0eSearchProducts\x12&.stockchecker.v1.SearchProductsRequest\x1a'.stockchecker.v1.SearchProductsResponse\x12U\n" +
@@ -1288,7 +1373,8 @@ const file_stockchecker_v1_service_proto_rawDesc = "" +
 	"\rRemoveMyStore\x12%.stockchecker.v1.RemoveMyStoreRequest\x1a&.stockchecker.v1.RemoveMyStoreResponse\x12^\n" +
 	"\rGetMyProducts\x12%.stockchecker.v1.GetMyProductsRequest\x1a&.stockchecker.v1.GetMyProductsResponse\x12[\n" +
 	"\fAddMyProduct\x12$.stockchecker.v1.AddMyProductRequest\x1a%.stockchecker.v1.AddMyProductResponse\x12d\n" +
-	"\x0fRemoveMyProduct\x12'.stockchecker.v1.RemoveMyProductRequest\x1a(.stockchecker.v1.RemoveMyProductResponseB\xce\x01\n" +
+	"\x0fRemoveMyProduct\x12'.stockchecker.v1.RemoveMyProductRequest\x1a(.stockchecker.v1.RemoveMyProductResponse\x12v\n" +
+	"\x15BrowsePokemonProducts\x12-.stockchecker.v1.BrowsePokemonProductsRequest\x1a..stockchecker.v1.BrowsePokemonProductsResponseB\xce\x01\n" +
 	"\x13com.stockchecker.v1B\fServiceProtoP\x01ZLgithub.com/tmcauley/stock-checker/backend/gen/stockchecker/v1;stockcheckerv1\xa2\x02\x03SXX\xaa\x02\x0fStockchecker.V1\xca\x02\x0fStockchecker\\V1\xe2\x02\x1bStockchecker\\V1\\GPBMetadata\xea\x02\x10Stockchecker::V1b\x06proto3"
 
 var (
@@ -1303,32 +1389,34 @@ func file_stockchecker_v1_service_proto_rawDescGZIP() []byte {
 	return file_stockchecker_v1_service_proto_rawDescData
 }
 
-var file_stockchecker_v1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
+var file_stockchecker_v1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
 var file_stockchecker_v1_service_proto_goTypes = []any{
-	(*Store)(nil),                   // 0: stockchecker.v1.Store
-	(*Product)(nil),                 // 1: stockchecker.v1.Product
-	(*StockStatus)(nil),             // 2: stockchecker.v1.StockStatus
-	(*User)(nil),                    // 3: stockchecker.v1.User
-	(*SearchStoresRequest)(nil),     // 4: stockchecker.v1.SearchStoresRequest
-	(*SearchStoresResponse)(nil),    // 5: stockchecker.v1.SearchStoresResponse
-	(*SearchProductsRequest)(nil),   // 6: stockchecker.v1.SearchProductsRequest
-	(*SearchProductsResponse)(nil),  // 7: stockchecker.v1.SearchProductsResponse
-	(*CheckStockRequest)(nil),       // 8: stockchecker.v1.CheckStockRequest
-	(*CheckStockResponse)(nil),      // 9: stockchecker.v1.CheckStockResponse
-	(*GetCurrentUserRequest)(nil),   // 10: stockchecker.v1.GetCurrentUserRequest
-	(*GetCurrentUserResponse)(nil),  // 11: stockchecker.v1.GetCurrentUserResponse
-	(*GetMyStoresRequest)(nil),      // 12: stockchecker.v1.GetMyStoresRequest
-	(*GetMyStoresResponse)(nil),     // 13: stockchecker.v1.GetMyStoresResponse
-	(*AddMyStoreRequest)(nil),       // 14: stockchecker.v1.AddMyStoreRequest
-	(*AddMyStoreResponse)(nil),      // 15: stockchecker.v1.AddMyStoreResponse
-	(*RemoveMyStoreRequest)(nil),    // 16: stockchecker.v1.RemoveMyStoreRequest
-	(*RemoveMyStoreResponse)(nil),   // 17: stockchecker.v1.RemoveMyStoreResponse
-	(*GetMyProductsRequest)(nil),    // 18: stockchecker.v1.GetMyProductsRequest
-	(*GetMyProductsResponse)(nil),   // 19: stockchecker.v1.GetMyProductsResponse
-	(*AddMyProductRequest)(nil),     // 20: stockchecker.v1.AddMyProductRequest
-	(*AddMyProductResponse)(nil),    // 21: stockchecker.v1.AddMyProductResponse
-	(*RemoveMyProductRequest)(nil),  // 22: stockchecker.v1.RemoveMyProductRequest
-	(*RemoveMyProductResponse)(nil), // 23: stockchecker.v1.RemoveMyProductResponse
+	(*Store)(nil),                         // 0: stockchecker.v1.Store
+	(*Product)(nil),                       // 1: stockchecker.v1.Product
+	(*StockStatus)(nil),                   // 2: stockchecker.v1.StockStatus
+	(*User)(nil),                          // 3: stockchecker.v1.User
+	(*SearchStoresRequest)(nil),           // 4: stockchecker.v1.SearchStoresRequest
+	(*SearchStoresResponse)(nil),          // 5: stockchecker.v1.SearchStoresResponse
+	(*SearchProductsRequest)(nil),         // 6: stockchecker.v1.SearchProductsRequest
+	(*SearchProductsResponse)(nil),        // 7: stockchecker.v1.SearchProductsResponse
+	(*CheckStockRequest)(nil),             // 8: stockchecker.v1.CheckStockRequest
+	(*CheckStockResponse)(nil),            // 9: stockchecker.v1.CheckStockResponse
+	(*GetCurrentUserRequest)(nil),         // 10: stockchecker.v1.GetCurrentUserRequest
+	(*GetCurrentUserResponse)(nil),        // 11: stockchecker.v1.GetCurrentUserResponse
+	(*GetMyStoresRequest)(nil),            // 12: stockchecker.v1.GetMyStoresRequest
+	(*GetMyStoresResponse)(nil),           // 13: stockchecker.v1.GetMyStoresResponse
+	(*AddMyStoreRequest)(nil),             // 14: stockchecker.v1.AddMyStoreRequest
+	(*AddMyStoreResponse)(nil),            // 15: stockchecker.v1.AddMyStoreResponse
+	(*RemoveMyStoreRequest)(nil),          // 16: stockchecker.v1.RemoveMyStoreRequest
+	(*RemoveMyStoreResponse)(nil),         // 17: stockchecker.v1.RemoveMyStoreResponse
+	(*GetMyProductsRequest)(nil),          // 18: stockchecker.v1.GetMyProductsRequest
+	(*GetMyProductsResponse)(nil),         // 19: stockchecker.v1.GetMyProductsResponse
+	(*AddMyProductRequest)(nil),           // 20: stockchecker.v1.AddMyProductRequest
+	(*AddMyProductResponse)(nil),          // 21: stockchecker.v1.AddMyProductResponse
+	(*RemoveMyProductRequest)(nil),        // 22: stockchecker.v1.RemoveMyProductRequest
+	(*RemoveMyProductResponse)(nil),       // 23: stockchecker.v1.RemoveMyProductResponse
+	(*BrowsePokemonProductsRequest)(nil),  // 24: stockchecker.v1.BrowsePokemonProductsRequest
+	(*BrowsePokemonProductsResponse)(nil), // 25: stockchecker.v1.BrowsePokemonProductsResponse
 }
 var file_stockchecker_v1_service_proto_depIdxs = []int32{
 	0,  // 0: stockchecker.v1.StockStatus.store:type_name -> stockchecker.v1.Store
@@ -1341,31 +1429,34 @@ var file_stockchecker_v1_service_proto_depIdxs = []int32{
 	0,  // 7: stockchecker.v1.AddMyStoreRequest.store:type_name -> stockchecker.v1.Store
 	1,  // 8: stockchecker.v1.GetMyProductsResponse.products:type_name -> stockchecker.v1.Product
 	1,  // 9: stockchecker.v1.AddMyProductRequest.product:type_name -> stockchecker.v1.Product
-	4,  // 10: stockchecker.v1.StockCheckerService.SearchStores:input_type -> stockchecker.v1.SearchStoresRequest
-	6,  // 11: stockchecker.v1.StockCheckerService.SearchProducts:input_type -> stockchecker.v1.SearchProductsRequest
-	8,  // 12: stockchecker.v1.StockCheckerService.CheckStock:input_type -> stockchecker.v1.CheckStockRequest
-	10, // 13: stockchecker.v1.StockCheckerService.GetCurrentUser:input_type -> stockchecker.v1.GetCurrentUserRequest
-	12, // 14: stockchecker.v1.StockCheckerService.GetMyStores:input_type -> stockchecker.v1.GetMyStoresRequest
-	14, // 15: stockchecker.v1.StockCheckerService.AddMyStore:input_type -> stockchecker.v1.AddMyStoreRequest
-	16, // 16: stockchecker.v1.StockCheckerService.RemoveMyStore:input_type -> stockchecker.v1.RemoveMyStoreRequest
-	18, // 17: stockchecker.v1.StockCheckerService.GetMyProducts:input_type -> stockchecker.v1.GetMyProductsRequest
-	20, // 18: stockchecker.v1.StockCheckerService.AddMyProduct:input_type -> stockchecker.v1.AddMyProductRequest
-	22, // 19: stockchecker.v1.StockCheckerService.RemoveMyProduct:input_type -> stockchecker.v1.RemoveMyProductRequest
-	5,  // 20: stockchecker.v1.StockCheckerService.SearchStores:output_type -> stockchecker.v1.SearchStoresResponse
-	7,  // 21: stockchecker.v1.StockCheckerService.SearchProducts:output_type -> stockchecker.v1.SearchProductsResponse
-	9,  // 22: stockchecker.v1.StockCheckerService.CheckStock:output_type -> stockchecker.v1.CheckStockResponse
-	11, // 23: stockchecker.v1.StockCheckerService.GetCurrentUser:output_type -> stockchecker.v1.GetCurrentUserResponse
-	13, // 24: stockchecker.v1.StockCheckerService.GetMyStores:output_type -> stockchecker.v1.GetMyStoresResponse
-	15, // 25: stockchecker.v1.StockCheckerService.AddMyStore:output_type -> stockchecker.v1.AddMyStoreResponse
-	17, // 26: stockchecker.v1.StockCheckerService.RemoveMyStore:output_type -> stockchecker.v1.RemoveMyStoreResponse
-	19, // 27: stockchecker.v1.StockCheckerService.GetMyProducts:output_type -> stockchecker.v1.GetMyProductsResponse
-	21, // 28: stockchecker.v1.StockCheckerService.AddMyProduct:output_type -> stockchecker.v1.AddMyProductResponse
-	23, // 29: stockchecker.v1.StockCheckerService.RemoveMyProduct:output_type -> stockchecker.v1.RemoveMyProductResponse
-	20, // [20:30] is the sub-list for method output_type
-	10, // [10:20] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	1,  // 10: stockchecker.v1.BrowsePokemonProductsResponse.products:type_name -> stockchecker.v1.Product
+	4,  // 11: stockchecker.v1.StockCheckerService.SearchStores:input_type -> stockchecker.v1.SearchStoresRequest
+	6,  // 12: stockchecker.v1.StockCheckerService.SearchProducts:input_type -> stockchecker.v1.SearchProductsRequest
+	8,  // 13: stockchecker.v1.StockCheckerService.CheckStock:input_type -> stockchecker.v1.CheckStockRequest
+	10, // 14: stockchecker.v1.StockCheckerService.GetCurrentUser:input_type -> stockchecker.v1.GetCurrentUserRequest
+	12, // 15: stockchecker.v1.StockCheckerService.GetMyStores:input_type -> stockchecker.v1.GetMyStoresRequest
+	14, // 16: stockchecker.v1.StockCheckerService.AddMyStore:input_type -> stockchecker.v1.AddMyStoreRequest
+	16, // 17: stockchecker.v1.StockCheckerService.RemoveMyStore:input_type -> stockchecker.v1.RemoveMyStoreRequest
+	18, // 18: stockchecker.v1.StockCheckerService.GetMyProducts:input_type -> stockchecker.v1.GetMyProductsRequest
+	20, // 19: stockchecker.v1.StockCheckerService.AddMyProduct:input_type -> stockchecker.v1.AddMyProductRequest
+	22, // 20: stockchecker.v1.StockCheckerService.RemoveMyProduct:input_type -> stockchecker.v1.RemoveMyProductRequest
+	24, // 21: stockchecker.v1.StockCheckerService.BrowsePokemonProducts:input_type -> stockchecker.v1.BrowsePokemonProductsRequest
+	5,  // 22: stockchecker.v1.StockCheckerService.SearchStores:output_type -> stockchecker.v1.SearchStoresResponse
+	7,  // 23: stockchecker.v1.StockCheckerService.SearchProducts:output_type -> stockchecker.v1.SearchProductsResponse
+	9,  // 24: stockchecker.v1.StockCheckerService.CheckStock:output_type -> stockchecker.v1.CheckStockResponse
+	11, // 25: stockchecker.v1.StockCheckerService.GetCurrentUser:output_type -> stockchecker.v1.GetCurrentUserResponse
+	13, // 26: stockchecker.v1.StockCheckerService.GetMyStores:output_type -> stockchecker.v1.GetMyStoresResponse
+	15, // 27: stockchecker.v1.StockCheckerService.AddMyStore:output_type -> stockchecker.v1.AddMyStoreResponse
+	17, // 28: stockchecker.v1.StockCheckerService.RemoveMyStore:output_type -> stockchecker.v1.RemoveMyStoreResponse
+	19, // 29: stockchecker.v1.StockCheckerService.GetMyProducts:output_type -> stockchecker.v1.GetMyProductsResponse
+	21, // 30: stockchecker.v1.StockCheckerService.AddMyProduct:output_type -> stockchecker.v1.AddMyProductResponse
+	23, // 31: stockchecker.v1.StockCheckerService.RemoveMyProduct:output_type -> stockchecker.v1.RemoveMyProductResponse
+	25, // 32: stockchecker.v1.StockCheckerService.BrowsePokemonProducts:output_type -> stockchecker.v1.BrowsePokemonProductsResponse
+	22, // [22:33] is the sub-list for method output_type
+	11, // [11:22] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_stockchecker_v1_service_proto_init() }
@@ -1379,7 +1470,7 @@ func file_stockchecker_v1_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_stockchecker_v1_service_proto_rawDesc), len(file_stockchecker_v1_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   24,
+			NumMessages:   26,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
