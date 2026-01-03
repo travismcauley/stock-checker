@@ -292,7 +292,8 @@ func (c *APIClient) SearchProducts(ctx context.Context, query string) ([]Product
 	}
 
 	// Use PathEscape instead of QueryEscape because Best Buy API needs %20 for spaces, not +
-	endpoint := fmt.Sprintf("%s/products(search=%s)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=50&apiKey=%s",
+	// Include active=* to also return inactive products (Best Buy hides many Pokemon TCG products)
+	endpoint := fmt.Sprintf("%s/products(search=%s&active=*)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=50&apiKey=%s",
 		c.baseURL, url.PathEscape(query), c.apiKey)
 
 	log.Printf("Searching products with endpoint: %s", endpoint)
@@ -362,12 +363,31 @@ func (c *APIClient) SearchProductsInCategory(ctx context.Context, categoryID str
 	return result.Products, nil
 }
 
-// BrowsePokemonProducts returns Pokemon TCG products from the trading cards category
+// BrowsePokemonProducts returns Pokemon TCG products (including inactive ones)
 func (c *APIClient) BrowsePokemonProducts(ctx context.Context) ([]Product, error) {
 	log.Printf("BrowsePokemonProducts called")
 
-	// Search for Pokemon within the trading cards category
-	return c.SearchProductsInCategory(ctx, CategoryTradingCards, "pokemon")
+	// Search for Pokemon TCG cards by subclass, including inactive products
+	// Best Buy marks most Pokemon TCG as "inactive" due to invitation system
+	endpoint := fmt.Sprintf("%s/products(subclass=POKEMON%%20CARDS&active=*)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=100&apiKey=%s",
+		c.baseURL, c.apiKey)
+
+	log.Printf("Browse Pokemon endpoint: %s", endpoint)
+
+	body, err := c.doRequest(ctx, endpoint)
+	if err != nil {
+		log.Printf("Browse Pokemon error: %v", err)
+		return nil, err
+	}
+
+	var result productsResponse
+	if err := json.Unmarshal(body, &result); err != nil {
+		log.Printf("Failed to decode browse Pokemon response: %v", err)
+		return nil, fmt.Errorf("failed to decode response: %w", err)
+	}
+
+	log.Printf("Browse Pokemon returned %d results", len(result.Products))
+	return result.Products, nil
 }
 
 // CheckAvailability checks product availability at specific stores
