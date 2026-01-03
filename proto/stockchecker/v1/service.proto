@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package stockchecker.v1;
+
+// Store represents a Best Buy store location
+message Store {
+  string store_id = 1;
+  string name = 2;
+  string address = 3;
+  string city = 4;
+  string state = 5;
+  string postal_code = 6;
+  string phone = 7;
+  double distance_miles = 8;
+}
+
+// Product represents a Best Buy product
+message Product {
+  string sku = 1;
+  string name = 2;
+  double sale_price = 3;
+  string thumbnail_url = 4;
+  string product_url = 5;
+}
+
+// StockStatus represents the availability of a product at a store
+message StockStatus {
+  Store store = 1;
+  Product product = 2;
+  bool in_stock = 3;
+  bool low_stock = 4;
+  bool pickup_eligible = 5;
+}
+
+// SearchStoresRequest is the request for searching stores
+message SearchStoresRequest {
+  string postal_code = 1;
+  int32 radius_miles = 2; // defaults to 25 if not specified
+}
+
+// SearchStoresResponse is the response containing matching stores
+message SearchStoresResponse {
+  repeated Store stores = 1;
+}
+
+// SearchProductsRequest is the request for searching products
+message SearchProductsRequest {
+  string query = 1; // search term or SKU
+}
+
+// SearchProductsResponse is the response containing matching products
+message SearchProductsResponse {
+  repeated Product products = 1;
+}
+
+// CheckStockRequest is the request for checking stock
+message CheckStockRequest {
+  repeated string store_ids = 1;
+  repeated string skus = 2;
+}
+
+// CheckStockResponse is the response containing stock status
+message CheckStockResponse {
+  repeated StockStatus results = 1;
+}
+
+// StockCheckerService provides stock checking functionality
+service StockCheckerService {
+  // SearchStores searches for Best Buy stores near a location
+  rpc SearchStores(SearchStoresRequest) returns (SearchStoresResponse);
+
+  // SearchProducts searches for products by keyword or SKU
+  rpc SearchProducts(SearchProductsRequest) returns (SearchProductsResponse);
+
+  // CheckStock checks inventory for products at specified stores
+  rpc CheckStock(CheckStockRequest) returns (CheckStockResponse);
+}

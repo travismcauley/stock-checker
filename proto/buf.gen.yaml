@@ -1,0 +1,20 @@
+version: v2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/tmcauley/stock-checker/backend/gen
+plugins:
+  # Go protobuf generation
+  - remote: buf.build/protocolbuffers/go
+    out: ../backend/gen
+    opt: paths=source_relative
+  # Connect-Go generation
+  - remote: buf.build/connectrpc/go
+    out: ../backend/gen
+    opt: paths=source_relative
+  # TypeScript/ES generation for frontend
+  - remote: buf.build/connectrpc/es
+    out: ../frontend/src/gen
+  - remote: buf.build/bufbuild/es
+    out: ../frontend/src/gen
