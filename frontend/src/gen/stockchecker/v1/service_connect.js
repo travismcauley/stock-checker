@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CheckStockRequest, CheckStockResponse, SearchProductsRequest, SearchProductsResponse, SearchStoresRequest, SearchStoresResponse } from "./service_pb.js";
+import { AddMyProductRequest, AddMyProductResponse, AddMyStoreRequest, AddMyStoreResponse, CheckStockRequest, CheckStockResponse, GetCurrentUserRequest, GetCurrentUserResponse, GetMyProductsRequest, GetMyProductsResponse, GetMyStoresRequest, GetMyStoresResponse, RemoveMyProductRequest, RemoveMyProductResponse, RemoveMyStoreRequest, RemoveMyStoreResponse, SearchProductsRequest, SearchProductsResponse, SearchStoresRequest, SearchStoresResponse } from "./service_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -45,6 +45,83 @@ export const StockCheckerService = {
       name: "CheckStock",
       I: CheckStockRequest,
       O: CheckStockResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * GetCurrentUser returns the currently authenticated user
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.GetCurrentUser
+     */
+    getCurrentUser: {
+      name: "GetCurrentUser",
+      I: GetCurrentUserRequest,
+      O: GetCurrentUserResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * GetMyStores returns the user's saved stores
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.GetMyStores
+     */
+    getMyStores: {
+      name: "GetMyStores",
+      I: GetMyStoresRequest,
+      O: GetMyStoresResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * AddMyStore adds a store to the user's list
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.AddMyStore
+     */
+    addMyStore: {
+      name: "AddMyStore",
+      I: AddMyStoreRequest,
+      O: AddMyStoreResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * RemoveMyStore removes a store from the user's list
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.RemoveMyStore
+     */
+    removeMyStore: {
+      name: "RemoveMyStore",
+      I: RemoveMyStoreRequest,
+      O: RemoveMyStoreResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * GetMyProducts returns the user's saved products
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.GetMyProducts
+     */
+    getMyProducts: {
+      name: "GetMyProducts",
+      I: GetMyProductsRequest,
+      O: GetMyProductsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * AddMyProduct adds a product to the user's list
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.AddMyProduct
+     */
+    addMyProduct: {
+      name: "AddMyProduct",
+      I: AddMyProductRequest,
+      O: AddMyProductResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * RemoveMyProduct removes a product from the user's list
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.RemoveMyProduct
+     */
+    removeMyProduct: {
+      name: "RemoveMyProduct",
+      I: RemoveMyProductRequest,
+      O: RemoveMyProductResponse,
       kind: MethodKind.Unary,
     },
   }

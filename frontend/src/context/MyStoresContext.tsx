@@ -1,6 +1,10 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import type { ReactNode } from 'react'
+import { createClient } from '@connectrpc/connect'
+import { createConnectTransport } from '@connectrpc/connect-web'
+import { StockCheckerService } from '../gen/stockchecker/v1/service_pb.js'
 import type { Store } from '../gen/stockchecker/v1/service_pb.js'
+import { useAuth } from './AuthContext'
 
 const STORAGE_KEY = 'pokemon-stock-checker-my-stores'
 
@@ -10,9 +14,23 @@ interface MyStoresContextType {
   removeStore: (storeId: string) => void
   isStoreInList: (storeId: string) => boolean
   clearStores: () => void
+  isLoading: boolean
 }
 
 const MyStoresContext = createContext<MyStoresContextType | undefined>(undefined)
+
+// Custom fetch that includes credentials
+const fetchWithCredentials: typeof fetch = (input, init) => {
+  return fetch(input, { ...init, credentials: 'include' })
+}
+
+// Create transport with credentials to send cookies
+const transport = createConnectTransport({
+  baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8080',
+  fetch: fetchWithCredentials,
+})
+
+const client = createClient(StockCheckerService, transport)
 
 // Helper to serialize Store to a plain object for localStorage
 function serializeStore(store: Store): Record<string, unknown> {
@@ -44,42 +62,99 @@ function deserializeStore(data: Record<string, unknown>): Store {
 }
 
 export function MyStoresProvider({ children }: { children: ReactNode }) {
-  const [stores, setStores] = useState<Store[]>(() => {
-    // Load from localStorage on initial render
+  const { isAuthenticated, isLoading: authLoading } = useAuth()
+  const [stores, setStores] = useState<Store[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Load stores from API or localStorage
+  const loadStores = useCallback(async () => {
+    if (authLoading) return
+
+    setIsLoading(true)
     try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-      if (saved) {
-        const parsed = JSON.parse(saved) as Record<string, unknown>[]
-        return parsed.map(deserializeStore)
+      if (isAuthenticated) {
+        // Load from API
+        const response = await client.getMyStores({})
+        setStores(response.stores)
+      } else {
+        // Load from localStorage
+        const saved = localStorage.getItem(STORAGE_KEY)
+        if (saved) {
+          const parsed = JSON.parse(saved) as Record<string, unknown>[]
+          setStores(parsed.map(deserializeStore))
+        } else {
+          setStores([])
+        }
       }
     } catch (e) {
-      console.error('Failed to load stores from localStorage:', e)
+      console.error('Failed to load stores:', e)
+      // Fall back to localStorage if API fails
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY)
+        if (saved) {
+          const parsed = JSON.parse(saved) as Record<string, unknown>[]
+          setStores(parsed.map(deserializeStore))
+        }
+      } catch {
+        setStores([])
+      }
+    } finally {
+      setIsLoading(false)
     }
-    return []
-  })
+  }, [isAuthenticated, authLoading])
 
-  // Save to localStorage whenever stores change
   useEffect(() => {
+    loadStores()
+  }, [loadStores])
+
+  // Save to localStorage when not authenticated
+  useEffect(() => {
+    if (authLoading || isAuthenticated) return
     try {
       const serialized = stores.map(serializeStore)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized))
     } catch (e) {
       console.error('Failed to save stores to localStorage:', e)
     }
-  }, [stores])
+  }, [stores, isAuthenticated, authLoading])
 
-  const addStore = (store: Store) => {
+  const addStore = async (store: Store) => {
+    // Optimistically update local state
     setStores((prev) => {
-      // Don't add if already in list
       if (prev.some((s) => s.storeId === store.storeId)) {
         return prev
       }
       return [...prev, store]
     })
+
+    if (isAuthenticated) {
+      try {
+        await client.addMyStore({ store })
+      } catch (e) {
+        console.error('Failed to add store to API:', e)
+        // Revert on failure
+        setStores((prev) => prev.filter((s) => s.storeId !== store.storeId))
+      }
+    }
   }
 
-  const removeStore = (storeId: string) => {
+  const removeStore = async (storeId: string) => {
+    const removedStore = stores.find((s) => s.storeId === storeId)
+
+    // Optimistically update local state
     setStores((prev) => prev.filter((s) => s.storeId !== storeId))
+
+    if (isAuthenticated) {
+      try {
+        await client.removeMyStore({ storeId })
+      } catch (e) {
+        console.error('Failed to remove store from API:', e)
+        // Revert on failure
+        if (removedStore) {
+          setStores((prev) => [...prev, removedStore])
+        }
+      }
+    }
   }
 
   const isStoreInList = (storeId: string) => {
@@ -88,11 +163,14 @@ export function MyStoresProvider({ children }: { children: ReactNode }) {
 
   const clearStores = () => {
     setStores([])
+    if (!isAuthenticated) {
+      localStorage.removeItem(STORAGE_KEY)
+    }
   }
 
   return (
     <MyStoresContext.Provider
-      value={{ stores, addStore, removeStore, isStoreInList, clearStores }}
+      value={{ stores, addStore, removeStore, isStoreInList, clearStores, isLoading }}
     >
       {children}
     </MyStoresContext.Provider>

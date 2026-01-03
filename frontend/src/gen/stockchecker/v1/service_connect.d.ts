@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CheckStockRequest, CheckStockResponse, SearchProductsRequest, SearchProductsResponse, SearchStoresRequest, SearchStoresResponse } from "./service_pb.js";
+import { AddMyProductRequest, AddMyProductResponse, AddMyStoreRequest, AddMyStoreResponse, CheckStockRequest, CheckStockResponse, GetCurrentUserRequest, GetCurrentUserResponse, GetMyProductsRequest, GetMyProductsResponse, GetMyStoresRequest, GetMyStoresResponse, RemoveMyProductRequest, RemoveMyProductResponse, RemoveMyStoreRequest, RemoveMyStoreResponse, SearchProductsRequest, SearchProductsResponse, SearchStoresRequest, SearchStoresResponse } from "./service_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -45,6 +45,83 @@ export declare const StockCheckerService: {
       readonly name: "CheckStock",
       readonly I: typeof CheckStockRequest,
       readonly O: typeof CheckStockResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * GetCurrentUser returns the currently authenticated user
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.GetCurrentUser
+     */
+    readonly getCurrentUser: {
+      readonly name: "GetCurrentUser",
+      readonly I: typeof GetCurrentUserRequest,
+      readonly O: typeof GetCurrentUserResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * GetMyStores returns the user's saved stores
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.GetMyStores
+     */
+    readonly getMyStores: {
+      readonly name: "GetMyStores",
+      readonly I: typeof GetMyStoresRequest,
+      readonly O: typeof GetMyStoresResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * AddMyStore adds a store to the user's list
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.AddMyStore
+     */
+    readonly addMyStore: {
+      readonly name: "AddMyStore",
+      readonly I: typeof AddMyStoreRequest,
+      readonly O: typeof AddMyStoreResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * RemoveMyStore removes a store from the user's list
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.RemoveMyStore
+     */
+    readonly removeMyStore: {
+      readonly name: "RemoveMyStore",
+      readonly I: typeof RemoveMyStoreRequest,
+      readonly O: typeof RemoveMyStoreResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * GetMyProducts returns the user's saved products
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.GetMyProducts
+     */
+    readonly getMyProducts: {
+      readonly name: "GetMyProducts",
+      readonly I: typeof GetMyProductsRequest,
+      readonly O: typeof GetMyProductsResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * AddMyProduct adds a product to the user's list
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.AddMyProduct
+     */
+    readonly addMyProduct: {
+      readonly name: "AddMyProduct",
+      readonly I: typeof AddMyProductRequest,
+      readonly O: typeof AddMyProductResponse,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * RemoveMyProduct removes a product from the user's list
+     *
+     * @generated from rpc stockchecker.v1.StockCheckerService.RemoveMyProduct
+     */
+    readonly removeMyProduct: {
+      readonly name: "RemoveMyProduct",
+      readonly I: typeof RemoveMyProductRequest,
+      readonly O: typeof RemoveMyProductResponse,
       readonly kind: MethodKind.Unary,
     },
   }

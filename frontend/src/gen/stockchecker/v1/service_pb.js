@@ -8,7 +8,7 @@ import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2
  * Describes the file stockchecker/v1/service.proto.
  */
 export const file_stockchecker_v1_service = /*@__PURE__*/
-  fileDesc("Ch1zdG9ja2NoZWNrZXIvdjEvc2VydmljZS5wcm90bxIPc3RvY2tjaGVja2VyLnYxIpEBCgVTdG9yZRIQCghzdG9yZV9pZBgBIAEoCRIMCgRuYW1lGAIgASgJEg8KB2FkZHJlc3MYAyABKAkSDAoEY2l0eRgEIAEoCRINCgVzdGF0ZRgFIAEoCRITCgtwb3N0YWxfY29kZRgGIAEoCRINCgVwaG9uZRgHIAEoCRIWCg5kaXN0YW5jZV9taWxlcxgIIAEoASJkCgdQcm9kdWN0EgsKA3NrdRgBIAEoCRIMCgRuYW1lGAIgASgJEhIKCnNhbGVfcHJpY2UYAyABKAESFQoNdGh1bWJuYWlsX3VybBgEIAEoCRITCgtwcm9kdWN0X3VybBgFIAEoCSKdAQoLU3RvY2tTdGF0dXMSJQoFc3RvcmUYASABKAsyFi5zdG9ja2NoZWNrZXIudjEuU3RvcmUSKQoHcHJvZHVjdBgCIAEoCzIYLnN0b2NrY2hlY2tlci52MS5Qcm9kdWN0EhAKCGluX3N0b2NrGAMgASgIEhEKCWxvd19zdG9jaxgEIAEoCBIXCg9waWNrdXBfZWxpZ2libGUYBSABKAgiQAoTU2VhcmNoU3RvcmVzUmVxdWVzdBITCgtwb3N0YWxfY29kZRgBIAEoCRIUCgxyYWRpdXNfbWlsZXMYAiABKAUiPgoUU2VhcmNoU3RvcmVzUmVzcG9uc2USJgoGc3RvcmVzGAEgAygLMhYuc3RvY2tjaGVja2VyLnYxLlN0b3JlIiYKFVNlYXJjaFByb2R1Y3RzUmVxdWVzdBINCgVxdWVyeRgBIAEoCSJEChZTZWFyY2hQcm9kdWN0c1Jlc3BvbnNlEioKCHByb2R1Y3RzGAEgAygLMhguc3RvY2tjaGVja2VyLnYxLlByb2R1Y3QiNAoRQ2hlY2tTdG9ja1JlcXVlc3QSEQoJc3RvcmVfaWRzGAEgAygJEgwKBHNrdXMYAiADKAkiQwoSQ2hlY2tTdG9ja1Jlc3BvbnNlEi0KB3Jlc3VsdHMYASADKAsyHC5zdG9ja2NoZWNrZXIudjEuU3RvY2tTdGF0dXMyrAIKE1N0b2NrQ2hlY2tlclNlcnZpY2USWwoMU2VhcmNoU3RvcmVzEiQuc3RvY2tjaGVja2VyLnYxLlNlYXJjaFN0b3Jlc1JlcXVlc3QaJS5zdG9ja2NoZWNrZXIudjEuU2VhcmNoU3RvcmVzUmVzcG9uc2USYQoOU2VhcmNoUHJvZHVjdHMSJi5zdG9ja2NoZWNrZXIudjEuU2VhcmNoUHJvZHVjdHNSZXF1ZXN0Gicuc3RvY2tjaGVja2VyLnYxLlNlYXJjaFByb2R1Y3RzUmVzcG9uc2USVQoKQ2hlY2tTdG9jaxIiLnN0b2NrY2hlY2tlci52MS5DaGVja1N0b2NrUmVxdWVzdBojLnN0b2NrY2hlY2tlci52MS5DaGVja1N0b2NrUmVzcG9uc2VCzgEKE2NvbS5zdG9ja2NoZWNrZXIudjFCDFNlcnZpY2VQcm90b1ABWkxnaXRodWIuY29tL3RtY2F1bGV5L3N0b2NrLWNoZWNrZXIvYmFja2VuZC9nZW4vc3RvY2tjaGVja2VyL3YxO3N0b2NrY2hlY2tlcnYxogIDU1hYqgIPU3RvY2tjaGVja2VyLlYxygIPU3RvY2tjaGVja2VyXFYx4gIbU3RvY2tjaGVja2VyXFYxXEdQQk1ldGFkYXRh6gIQU3RvY2tjaGVja2VyOjpWMWIGcHJvdG8z");
+  fileDesc("Ch1zdG9ja2NoZWNrZXIvdjEvc2VydmljZS5wcm90bxIPc3RvY2tjaGVja2VyLnYxIpEBCgVTdG9yZRIQCghzdG9yZV9pZBgBIAEoCRIMCgRuYW1lGAIgASgJEg8KB2FkZHJlc3MYAyABKAkSDAoEY2l0eRgEIAEoCRINCgVzdGF0ZRgFIAEoCRITCgtwb3N0YWxfY29kZRgGIAEoCRINCgVwaG9uZRgHIAEoCRIWCg5kaXN0YW5jZV9taWxlcxgIIAEoASJkCgdQcm9kdWN0EgsKA3NrdRgBIAEoCRIMCgRuYW1lGAIgASgJEhIKCnNhbGVfcHJpY2UYAyABKAESFQoNdGh1bWJuYWlsX3VybBgEIAEoCRITCgtwcm9kdWN0X3VybBgFIAEoCSKdAQoLU3RvY2tTdGF0dXMSJQoFc3RvcmUYASABKAsyFi5zdG9ja2NoZWNrZXIudjEuU3RvcmUSKQoHcHJvZHVjdBgCIAEoCzIYLnN0b2NrY2hlY2tlci52MS5Qcm9kdWN0EhAKCGluX3N0b2NrGAMgASgIEhEKCWxvd19zdG9jaxgEIAEoCBIXCg9waWNrdXBfZWxpZ2libGUYBSABKAgiRAoEVXNlchIKCgJpZBgBIAEoBRINCgVlbWFpbBgCIAEoCRIMCgRuYW1lGAMgASgJEhMKC3BpY3R1cmVfdXJsGAQgASgJIkAKE1NlYXJjaFN0b3Jlc1JlcXVlc3QSEwoLcG9zdGFsX2NvZGUYASABKAkSFAoMcmFkaXVzX21pbGVzGAIgASgFIj4KFFNlYXJjaFN0b3Jlc1Jlc3BvbnNlEiYKBnN0b3JlcxgBIAMoCzIWLnN0b2NrY2hlY2tlci52MS5TdG9yZSImChVTZWFyY2hQcm9kdWN0c1JlcXVlc3QSDQoFcXVlcnkYASABKAkiRAoWU2VhcmNoUHJvZHVjdHNSZXNwb25zZRIqCghwcm9kdWN0cxgBIAMoCzIYLnN0b2NrY2hlY2tlci52MS5Qcm9kdWN0IjQKEUNoZWNrU3RvY2tSZXF1ZXN0EhEKCXN0b3JlX2lkcxgBIAMoCRIMCgRza3VzGAIgAygJIkMKEkNoZWNrU3RvY2tSZXNwb25zZRItCgdyZXN1bHRzGAEgAygLMhwuc3RvY2tjaGVja2VyLnYxLlN0b2NrU3RhdHVzIhcKFUdldEN1cnJlbnRVc2VyUmVxdWVzdCI9ChZHZXRDdXJyZW50VXNlclJlc3BvbnNlEiMKBHVzZXIYASABKAsyFS5zdG9ja2NoZWNrZXIudjEuVXNlciIUChJHZXRNeVN0b3Jlc1JlcXVlc3QiPQoTR2V0TXlTdG9yZXNSZXNwb25zZRImCgZzdG9yZXMYASADKAsyFi5zdG9ja2NoZWNrZXIudjEuU3RvcmUiOgoRQWRkTXlTdG9yZVJlcXVlc3QSJQoFc3RvcmUYASABKAsyFi5zdG9ja2NoZWNrZXIudjEuU3RvcmUiFAoSQWRkTXlTdG9yZVJlc3BvbnNlIigKFFJlbW92ZU15U3RvcmVSZXF1ZXN0EhAKCHN0b3JlX2lkGAEgASgJIhcKFVJlbW92ZU15U3RvcmVSZXNwb25zZSIWChRHZXRNeVByb2R1Y3RzUmVxdWVzdCJDChVHZXRNeVByb2R1Y3RzUmVzcG9uc2USKgoIcHJvZHVjdHMYASADKAsyGC5zdG9ja2NoZWNrZXIudjEuUHJvZHVjdCJAChNBZGRNeVByb2R1Y3RSZXF1ZXN0EikKB3Byb2R1Y3QYASABKAsyGC5zdG9ja2NoZWNrZXIudjEuUHJvZHVjdCIWChRBZGRNeVByb2R1Y3RSZXNwb25zZSIlChZSZW1vdmVNeVByb2R1Y3RSZXF1ZXN0EgsKA3NrdRgBIAEoCSIZChdSZW1vdmVNeVByb2R1Y3RSZXNwb25zZTLDBwoTU3RvY2tDaGVja2VyU2VydmljZRJbCgxTZWFyY2hTdG9yZXMSJC5zdG9ja2NoZWNrZXIudjEuU2VhcmNoU3RvcmVzUmVxdWVzdBolLnN0b2NrY2hlY2tlci52MS5TZWFyY2hTdG9yZXNSZXNwb25zZRJhCg5TZWFyY2hQcm9kdWN0cxImLnN0b2NrY2hlY2tlci52MS5TZWFyY2hQcm9kdWN0c1JlcXVlc3QaJy5zdG9ja2NoZWNrZXIudjEuU2VhcmNoUHJvZHVjdHNSZXNwb25zZRJVCgpDaGVja1N0b2NrEiIuc3RvY2tjaGVja2VyLnYxLkNoZWNrU3RvY2tSZXF1ZXN0GiMuc3RvY2tjaGVja2VyLnYxLkNoZWNrU3RvY2tSZXNwb25zZRJhCg5HZXRDdXJyZW50VXNlchImLnN0b2NrY2hlY2tlci52MS5HZXRDdXJyZW50VXNlclJlcXVlc3QaJy5zdG9ja2NoZWNrZXIudjEuR2V0Q3VycmVudFVzZXJSZXNwb25zZRJYCgtHZXRNeVN0b3JlcxIjLnN0b2NrY2hlY2tlci52MS5HZXRNeVN0b3Jlc1JlcXVlc3QaJC5zdG9ja2NoZWNrZXIudjEuR2V0TXlTdG9yZXNSZXNwb25zZRJVCgpBZGRNeVN0b3JlEiIuc3RvY2tjaGVja2VyLnYxLkFkZE15U3RvcmVSZXF1ZXN0GiMuc3RvY2tjaGVja2VyLnYxLkFkZE15U3RvcmVSZXNwb25zZRJeCg1SZW1vdmVNeVN0b3JlEiUuc3RvY2tjaGVja2VyLnYxLlJlbW92ZU15U3RvcmVSZXF1ZXN0GiYuc3RvY2tjaGVja2VyLnYxLlJlbW92ZU15U3RvcmVSZXNwb25zZRJeCg1HZXRNeVByb2R1Y3RzEiUuc3RvY2tjaGVja2VyLnYxLkdldE15UHJvZHVjdHNSZXF1ZXN0GiYuc3RvY2tjaGVja2VyLnYxLkdldE15UHJvZHVjdHNSZXNwb25zZRJbCgxBZGRNeVByb2R1Y3QSJC5zdG9ja2NoZWNrZXIudjEuQWRkTXlQcm9kdWN0UmVxdWVzdBolLnN0b2NrY2hlY2tlci52MS5BZGRNeVByb2R1Y3RSZXNwb25zZRJkCg9SZW1vdmVNeVByb2R1Y3QSJy5zdG9ja2NoZWNrZXIudjEuUmVtb3ZlTXlQcm9kdWN0UmVxdWVzdBooLnN0b2NrY2hlY2tlci52MS5SZW1vdmVNeVByb2R1Y3RSZXNwb25zZULOAQoTY29tLnN0b2NrY2hlY2tlci52MUIMU2VydmljZVByb3RvUAFaTGdpdGh1Yi5jb20vdG1jYXVsZXkvc3RvY2stY2hlY2tlci9iYWNrZW5kL2dlbi9zdG9ja2NoZWNrZXIvdjE7c3RvY2tjaGVja2VydjGiAgNTWFiqAg9TdG9ja2NoZWNrZXIuVjHKAg9TdG9ja2NoZWNrZXJcVjHiAhtTdG9ja2NoZWNrZXJcVjFcR1BCTWV0YWRhdGHqAhBTdG9ja2NoZWNrZXI6OlYxYgZwcm90bzM");
 
 /**
  * Describes the message stockchecker.v1.Store.
@@ -32,46 +32,151 @@ export const StockStatusSchema = /*@__PURE__*/
   messageDesc(file_stockchecker_v1_service, 2);
 
 /**
+ * Describes the message stockchecker.v1.User.
+ * Use `create(UserSchema)` to create a new message.
+ */
+export const UserSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 3);
+
+/**
  * Describes the message stockchecker.v1.SearchStoresRequest.
  * Use `create(SearchStoresRequestSchema)` to create a new message.
  */
 export const SearchStoresRequestSchema = /*@__PURE__*/
-  messageDesc(file_stockchecker_v1_service, 3);
+  messageDesc(file_stockchecker_v1_service, 4);
 
 /**
  * Describes the message stockchecker.v1.SearchStoresResponse.
  * Use `create(SearchStoresResponseSchema)` to create a new message.
  */
 export const SearchStoresResponseSchema = /*@__PURE__*/
-  messageDesc(file_stockchecker_v1_service, 4);
+  messageDesc(file_stockchecker_v1_service, 5);
 
 /**
  * Describes the message stockchecker.v1.SearchProductsRequest.
  * Use `create(SearchProductsRequestSchema)` to create a new message.
  */
 export const SearchProductsRequestSchema = /*@__PURE__*/
-  messageDesc(file_stockchecker_v1_service, 5);
+  messageDesc(file_stockchecker_v1_service, 6);
 
 /**
  * Describes the message stockchecker.v1.SearchProductsResponse.
  * Use `create(SearchProductsResponseSchema)` to create a new message.
  */
 export const SearchProductsResponseSchema = /*@__PURE__*/
-  messageDesc(file_stockchecker_v1_service, 6);
+  messageDesc(file_stockchecker_v1_service, 7);
 
 /**
  * Describes the message stockchecker.v1.CheckStockRequest.
  * Use `create(CheckStockRequestSchema)` to create a new message.
  */
 export const CheckStockRequestSchema = /*@__PURE__*/
-  messageDesc(file_stockchecker_v1_service, 7);
+  messageDesc(file_stockchecker_v1_service, 8);
 
 /**
  * Describes the message stockchecker.v1.CheckStockResponse.
  * Use `create(CheckStockResponseSchema)` to create a new message.
  */
 export const CheckStockResponseSchema = /*@__PURE__*/
-  messageDesc(file_stockchecker_v1_service, 8);
+  messageDesc(file_stockchecker_v1_service, 9);
+
+/**
+ * Describes the message stockchecker.v1.GetCurrentUserRequest.
+ * Use `create(GetCurrentUserRequestSchema)` to create a new message.
+ */
+export const GetCurrentUserRequestSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 10);
+
+/**
+ * Describes the message stockchecker.v1.GetCurrentUserResponse.
+ * Use `create(GetCurrentUserResponseSchema)` to create a new message.
+ */
+export const GetCurrentUserResponseSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 11);
+
+/**
+ * Describes the message stockchecker.v1.GetMyStoresRequest.
+ * Use `create(GetMyStoresRequestSchema)` to create a new message.
+ */
+export const GetMyStoresRequestSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 12);
+
+/**
+ * Describes the message stockchecker.v1.GetMyStoresResponse.
+ * Use `create(GetMyStoresResponseSchema)` to create a new message.
+ */
+export const GetMyStoresResponseSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 13);
+
+/**
+ * Describes the message stockchecker.v1.AddMyStoreRequest.
+ * Use `create(AddMyStoreRequestSchema)` to create a new message.
+ */
+export const AddMyStoreRequestSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 14);
+
+/**
+ * Describes the message stockchecker.v1.AddMyStoreResponse.
+ * Use `create(AddMyStoreResponseSchema)` to create a new message.
+ */
+export const AddMyStoreResponseSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 15);
+
+/**
+ * Describes the message stockchecker.v1.RemoveMyStoreRequest.
+ * Use `create(RemoveMyStoreRequestSchema)` to create a new message.
+ */
+export const RemoveMyStoreRequestSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 16);
+
+/**
+ * Describes the message stockchecker.v1.RemoveMyStoreResponse.
+ * Use `create(RemoveMyStoreResponseSchema)` to create a new message.
+ */
+export const RemoveMyStoreResponseSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 17);
+
+/**
+ * Describes the message stockchecker.v1.GetMyProductsRequest.
+ * Use `create(GetMyProductsRequestSchema)` to create a new message.
+ */
+export const GetMyProductsRequestSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 18);
+
+/**
+ * Describes the message stockchecker.v1.GetMyProductsResponse.
+ * Use `create(GetMyProductsResponseSchema)` to create a new message.
+ */
+export const GetMyProductsResponseSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 19);
+
+/**
+ * Describes the message stockchecker.v1.AddMyProductRequest.
+ * Use `create(AddMyProductRequestSchema)` to create a new message.
+ */
+export const AddMyProductRequestSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 20);
+
+/**
+ * Describes the message stockchecker.v1.AddMyProductResponse.
+ * Use `create(AddMyProductResponseSchema)` to create a new message.
+ */
+export const AddMyProductResponseSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 21);
+
+/**
+ * Describes the message stockchecker.v1.RemoveMyProductRequest.
+ * Use `create(RemoveMyProductRequestSchema)` to create a new message.
+ */
+export const RemoveMyProductRequestSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 22);
+
+/**
+ * Describes the message stockchecker.v1.RemoveMyProductResponse.
+ * Use `create(RemoveMyProductResponseSchema)` to create a new message.
+ */
+export const RemoveMyProductResponseSchema = /*@__PURE__*/
+  messageDesc(file_stockchecker_v1_service, 23);
 
 /**
  * StockCheckerService provides stock checking functionality

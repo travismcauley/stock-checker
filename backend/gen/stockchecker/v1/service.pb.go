@@ -276,6 +276,75 @@ func (x *StockStatus) GetPickupEligible() bool {
 	return false
 }
 
+// User represents an authenticated user
+type User struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	PictureUrl    string                 `protobuf:"bytes,4,opt,name=picture_url,json=pictureUrl,proto3" json:"picture_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *User) Reset() {
+	*x = User{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *User) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*User) ProtoMessage() {}
+
+func (x *User) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use User.ProtoReflect.Descriptor instead.
+func (*User) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *User) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *User) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *User) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *User) GetPictureUrl() string {
+	if x != nil {
+		return x.PictureUrl
+	}
+	return ""
+}
+
 // SearchStoresRequest is the request for searching stores
 type SearchStoresRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -287,7 +356,7 @@ type SearchStoresRequest struct {
 
 func (x *SearchStoresRequest) Reset() {
 	*x = SearchStoresRequest{}
-	mi := &file_stockchecker_v1_service_proto_msgTypes[3]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -299,7 +368,7 @@ func (x *SearchStoresRequest) String() string {
 func (*SearchStoresRequest) ProtoMessage() {}
 
 func (x *SearchStoresRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_stockchecker_v1_service_proto_msgTypes[3]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -312,7 +381,7 @@ func (x *SearchStoresRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchStoresRequest.ProtoReflect.Descriptor instead.
 func (*SearchStoresRequest) Descriptor() ([]byte, []int) {
-	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{3}
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *SearchStoresRequest) GetPostalCode() string {
@@ -339,7 +408,7 @@ type SearchStoresResponse struct {
 
 func (x *SearchStoresResponse) Reset() {
 	*x = SearchStoresResponse{}
-	mi := &file_stockchecker_v1_service_proto_msgTypes[4]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -351,7 +420,7 @@ func (x *SearchStoresResponse) String() string {
 func (*SearchStoresResponse) ProtoMessage() {}
 
 func (x *SearchStoresResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_stockchecker_v1_service_proto_msgTypes[4]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -364,7 +433,7 @@ func (x *SearchStoresResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchStoresResponse.ProtoReflect.Descriptor instead.
 func (*SearchStoresResponse) Descriptor() ([]byte, []int) {
-	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{4}
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *SearchStoresResponse) GetStores() []*Store {
@@ -384,7 +453,7 @@ type SearchProductsRequest struct {
 
 func (x *SearchProductsRequest) Reset() {
 	*x = SearchProductsRequest{}
-	mi := &file_stockchecker_v1_service_proto_msgTypes[5]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -396,7 +465,7 @@ func (x *SearchProductsRequest) String() string {
 func (*SearchProductsRequest) ProtoMessage() {}
 
 func (x *SearchProductsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_stockchecker_v1_service_proto_msgTypes[5]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -409,7 +478,7 @@ func (x *SearchProductsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchProductsRequest.ProtoReflect.Descriptor instead.
 func (*SearchProductsRequest) Descriptor() ([]byte, []int) {
-	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{5}
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SearchProductsRequest) GetQuery() string {
@@ -429,7 +498,7 @@ type SearchProductsResponse struct {
 
 func (x *SearchProductsResponse) Reset() {
 	*x = SearchProductsResponse{}
-	mi := &file_stockchecker_v1_service_proto_msgTypes[6]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -441,7 +510,7 @@ func (x *SearchProductsResponse) String() string {
 func (*SearchProductsResponse) ProtoMessage() {}
 
 func (x *SearchProductsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_stockchecker_v1_service_proto_msgTypes[6]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -454,7 +523,7 @@ func (x *SearchProductsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchProductsResponse.ProtoReflect.Descriptor instead.
 func (*SearchProductsResponse) Descriptor() ([]byte, []int) {
-	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{6}
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *SearchProductsResponse) GetProducts() []*Product {
@@ -475,7 +544,7 @@ type CheckStockRequest struct {
 
 func (x *CheckStockRequest) Reset() {
 	*x = CheckStockRequest{}
-	mi := &file_stockchecker_v1_service_proto_msgTypes[7]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -487,7 +556,7 @@ func (x *CheckStockRequest) String() string {
 func (*CheckStockRequest) ProtoMessage() {}
 
 func (x *CheckStockRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_stockchecker_v1_service_proto_msgTypes[7]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -500,7 +569,7 @@ func (x *CheckStockRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckStockRequest.ProtoReflect.Descriptor instead.
 func (*CheckStockRequest) Descriptor() ([]byte, []int) {
-	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{7}
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CheckStockRequest) GetStoreIds() []string {
@@ -527,7 +596,7 @@ type CheckStockResponse struct {
 
 func (x *CheckStockResponse) Reset() {
 	*x = CheckStockResponse{}
-	mi := &file_stockchecker_v1_service_proto_msgTypes[8]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -539,7 +608,7 @@ func (x *CheckStockResponse) String() string {
 func (*CheckStockResponse) ProtoMessage() {}
 
 func (x *CheckStockResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_stockchecker_v1_service_proto_msgTypes[8]
+	mi := &file_stockchecker_v1_service_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -552,7 +621,7 @@ func (x *CheckStockResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckStockResponse.ProtoReflect.Descriptor instead.
 func (*CheckStockResponse) Descriptor() ([]byte, []int) {
-	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{8}
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CheckStockResponse) GetResults() []*StockStatus {
@@ -560,6 +629,580 @@ func (x *CheckStockResponse) GetResults() []*StockStatus {
 		return x.Results
 	}
 	return nil
+}
+
+// GetCurrentUserRequest is empty - user is determined from session
+type GetCurrentUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCurrentUserRequest) Reset() {
+	*x = GetCurrentUserRequest{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCurrentUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCurrentUserRequest) ProtoMessage() {}
+
+func (x *GetCurrentUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCurrentUserRequest.ProtoReflect.Descriptor instead.
+func (*GetCurrentUserRequest) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{10}
+}
+
+// GetCurrentUserResponse returns the current user
+type GetCurrentUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCurrentUserResponse) Reset() {
+	*x = GetCurrentUserResponse{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCurrentUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCurrentUserResponse) ProtoMessage() {}
+
+func (x *GetCurrentUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCurrentUserResponse.ProtoReflect.Descriptor instead.
+func (*GetCurrentUserResponse) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetCurrentUserResponse) GetUser() *User {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+// GetMyStoresRequest is empty - user is determined from session
+type GetMyStoresRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMyStoresRequest) Reset() {
+	*x = GetMyStoresRequest{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMyStoresRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMyStoresRequest) ProtoMessage() {}
+
+func (x *GetMyStoresRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMyStoresRequest.ProtoReflect.Descriptor instead.
+func (*GetMyStoresRequest) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{12}
+}
+
+// GetMyStoresResponse returns the user's saved stores
+type GetMyStoresResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Stores        []*Store               `protobuf:"bytes,1,rep,name=stores,proto3" json:"stores,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMyStoresResponse) Reset() {
+	*x = GetMyStoresResponse{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMyStoresResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMyStoresResponse) ProtoMessage() {}
+
+func (x *GetMyStoresResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMyStoresResponse.ProtoReflect.Descriptor instead.
+func (*GetMyStoresResponse) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *GetMyStoresResponse) GetStores() []*Store {
+	if x != nil {
+		return x.Stores
+	}
+	return nil
+}
+
+// AddMyStoreRequest adds a store to the user's list
+type AddMyStoreRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Store         *Store                 `protobuf:"bytes,1,opt,name=store,proto3" json:"store,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddMyStoreRequest) Reset() {
+	*x = AddMyStoreRequest{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddMyStoreRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddMyStoreRequest) ProtoMessage() {}
+
+func (x *AddMyStoreRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddMyStoreRequest.ProtoReflect.Descriptor instead.
+func (*AddMyStoreRequest) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *AddMyStoreRequest) GetStore() *Store {
+	if x != nil {
+		return x.Store
+	}
+	return nil
+}
+
+// AddMyStoreResponse is empty on success
+type AddMyStoreResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddMyStoreResponse) Reset() {
+	*x = AddMyStoreResponse{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddMyStoreResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddMyStoreResponse) ProtoMessage() {}
+
+func (x *AddMyStoreResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddMyStoreResponse.ProtoReflect.Descriptor instead.
+func (*AddMyStoreResponse) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{15}
+}
+
+// RemoveMyStoreRequest removes a store from the user's list
+type RemoveMyStoreRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	StoreId       string                 `protobuf:"bytes,1,opt,name=store_id,json=storeId,proto3" json:"store_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveMyStoreRequest) Reset() {
+	*x = RemoveMyStoreRequest{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveMyStoreRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveMyStoreRequest) ProtoMessage() {}
+
+func (x *RemoveMyStoreRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveMyStoreRequest.ProtoReflect.Descriptor instead.
+func (*RemoveMyStoreRequest) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *RemoveMyStoreRequest) GetStoreId() string {
+	if x != nil {
+		return x.StoreId
+	}
+	return ""
+}
+
+// RemoveMyStoreResponse is empty on success
+type RemoveMyStoreResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveMyStoreResponse) Reset() {
+	*x = RemoveMyStoreResponse{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveMyStoreResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveMyStoreResponse) ProtoMessage() {}
+
+func (x *RemoveMyStoreResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveMyStoreResponse.ProtoReflect.Descriptor instead.
+func (*RemoveMyStoreResponse) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{17}
+}
+
+// GetMyProductsRequest is empty - user is determined from session
+type GetMyProductsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMyProductsRequest) Reset() {
+	*x = GetMyProductsRequest{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMyProductsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMyProductsRequest) ProtoMessage() {}
+
+func (x *GetMyProductsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMyProductsRequest.ProtoReflect.Descriptor instead.
+func (*GetMyProductsRequest) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{18}
+}
+
+// GetMyProductsResponse returns the user's saved products
+type GetMyProductsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Products      []*Product             `protobuf:"bytes,1,rep,name=products,proto3" json:"products,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMyProductsResponse) Reset() {
+	*x = GetMyProductsResponse{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMyProductsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMyProductsResponse) ProtoMessage() {}
+
+func (x *GetMyProductsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMyProductsResponse.ProtoReflect.Descriptor instead.
+func (*GetMyProductsResponse) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GetMyProductsResponse) GetProducts() []*Product {
+	if x != nil {
+		return x.Products
+	}
+	return nil
+}
+
+// AddMyProductRequest adds a product to the user's list
+type AddMyProductRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Product       *Product               `protobuf:"bytes,1,opt,name=product,proto3" json:"product,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddMyProductRequest) Reset() {
+	*x = AddMyProductRequest{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddMyProductRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddMyProductRequest) ProtoMessage() {}
+
+func (x *AddMyProductRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddMyProductRequest.ProtoReflect.Descriptor instead.
+func (*AddMyProductRequest) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *AddMyProductRequest) GetProduct() *Product {
+	if x != nil {
+		return x.Product
+	}
+	return nil
+}
+
+// AddMyProductResponse is empty on success
+type AddMyProductResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddMyProductResponse) Reset() {
+	*x = AddMyProductResponse{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddMyProductResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddMyProductResponse) ProtoMessage() {}
+
+func (x *AddMyProductResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddMyProductResponse.ProtoReflect.Descriptor instead.
+func (*AddMyProductResponse) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{21}
+}
+
+// RemoveMyProductRequest removes a product from the user's list
+type RemoveMyProductRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Sku           string                 `protobuf:"bytes,1,opt,name=sku,proto3" json:"sku,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveMyProductRequest) Reset() {
+	*x = RemoveMyProductRequest{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveMyProductRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveMyProductRequest) ProtoMessage() {}
+
+func (x *RemoveMyProductRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveMyProductRequest.ProtoReflect.Descriptor instead.
+func (*RemoveMyProductRequest) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *RemoveMyProductRequest) GetSku() string {
+	if x != nil {
+		return x.Sku
+	}
+	return ""
+}
+
+// RemoveMyProductResponse is empty on success
+type RemoveMyProductResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveMyProductResponse) Reset() {
+	*x = RemoveMyProductResponse{}
+	mi := &file_stockchecker_v1_service_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveMyProductResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveMyProductResponse) ProtoMessage() {}
+
+func (x *RemoveMyProductResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_stockchecker_v1_service_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveMyProductResponse.ProtoReflect.Descriptor instead.
+func (*RemoveMyProductResponse) Descriptor() ([]byte, []int) {
+	return file_stockchecker_v1_service_proto_rawDescGZIP(), []int{23}
 }
 
 var File_stockchecker_v1_service_proto protoreflect.FileDescriptor
@@ -590,7 +1233,13 @@ const file_stockchecker_v1_service_proto_rawDesc = "" +
 	"\aproduct\x18\x02 \x01(\v2\x18.stockchecker.v1.ProductR\aproduct\x12\x19\n" +
 	"\bin_stock\x18\x03 \x01(\bR\ainStock\x12\x1b\n" +
 	"\tlow_stock\x18\x04 \x01(\bR\blowStock\x12'\n" +
-	"\x0fpickup_eligible\x18\x05 \x01(\bR\x0epickupEligible\"Y\n" +
+	"\x0fpickup_eligible\x18\x05 \x01(\bR\x0epickupEligible\"a\n" +
+	"\x04User\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1f\n" +
+	"\vpicture_url\x18\x04 \x01(\tR\n" +
+	"pictureUrl\"Y\n" +
 	"\x13SearchStoresRequest\x12\x1f\n" +
 	"\vpostal_code\x18\x01 \x01(\tR\n" +
 	"postalCode\x12!\n" +
@@ -605,12 +1254,41 @@ const file_stockchecker_v1_service_proto_rawDesc = "" +
 	"\tstore_ids\x18\x01 \x03(\tR\bstoreIds\x12\x12\n" +
 	"\x04skus\x18\x02 \x03(\tR\x04skus\"L\n" +
 	"\x12CheckStockResponse\x126\n" +
-	"\aresults\x18\x01 \x03(\v2\x1c.stockchecker.v1.StockStatusR\aresults2\xac\x02\n" +
+	"\aresults\x18\x01 \x03(\v2\x1c.stockchecker.v1.StockStatusR\aresults\"\x17\n" +
+	"\x15GetCurrentUserRequest\"C\n" +
+	"\x16GetCurrentUserResponse\x12)\n" +
+	"\x04user\x18\x01 \x01(\v2\x15.stockchecker.v1.UserR\x04user\"\x14\n" +
+	"\x12GetMyStoresRequest\"E\n" +
+	"\x13GetMyStoresResponse\x12.\n" +
+	"\x06stores\x18\x01 \x03(\v2\x16.stockchecker.v1.StoreR\x06stores\"A\n" +
+	"\x11AddMyStoreRequest\x12,\n" +
+	"\x05store\x18\x01 \x01(\v2\x16.stockchecker.v1.StoreR\x05store\"\x14\n" +
+	"\x12AddMyStoreResponse\"1\n" +
+	"\x14RemoveMyStoreRequest\x12\x19\n" +
+	"\bstore_id\x18\x01 \x01(\tR\astoreId\"\x17\n" +
+	"\x15RemoveMyStoreResponse\"\x16\n" +
+	"\x14GetMyProductsRequest\"M\n" +
+	"\x15GetMyProductsResponse\x124\n" +
+	"\bproducts\x18\x01 \x03(\v2\x18.stockchecker.v1.ProductR\bproducts\"I\n" +
+	"\x13AddMyProductRequest\x122\n" +
+	"\aproduct\x18\x01 \x01(\v2\x18.stockchecker.v1.ProductR\aproduct\"\x16\n" +
+	"\x14AddMyProductResponse\"*\n" +
+	"\x16RemoveMyProductRequest\x12\x10\n" +
+	"\x03sku\x18\x01 \x01(\tR\x03sku\"\x19\n" +
+	"\x17RemoveMyProductResponse2\xc3\a\n" +
 	"\x13StockCheckerService\x12[\n" +
 	"\fSearchStores\x12$.stockchecker.v1.SearchStoresRequest\x1a%.stockchecker.v1.SearchStoresResponse\x12a\n" +
 	"\x0eSearchProducts\x12&.stockchecker.v1.SearchProductsRequest\x1a'.stockchecker.v1.SearchProductsResponse\x12U\n" +
 	"\n" +
-	"CheckStock\x12\".stockchecker.v1.CheckStockRequest\x1a#.stockchecker.v1.CheckStockResponseB\xce\x01\n" +
+	"CheckStock\x12\".stockchecker.v1.CheckStockRequest\x1a#.stockchecker.v1.CheckStockResponse\x12a\n" +
+	"\x0eGetCurrentUser\x12&.stockchecker.v1.GetCurrentUserRequest\x1a'.stockchecker.v1.GetCurrentUserResponse\x12X\n" +
+	"\vGetMyStores\x12#.stockchecker.v1.GetMyStoresRequest\x1a$.stockchecker.v1.GetMyStoresResponse\x12U\n" +
+	"\n" +
+	"AddMyStore\x12\".stockchecker.v1.AddMyStoreRequest\x1a#.stockchecker.v1.AddMyStoreResponse\x12^\n" +
+	"\rRemoveMyStore\x12%.stockchecker.v1.RemoveMyStoreRequest\x1a&.stockchecker.v1.RemoveMyStoreResponse\x12^\n" +
+	"\rGetMyProducts\x12%.stockchecker.v1.GetMyProductsRequest\x1a&.stockchecker.v1.GetMyProductsResponse\x12[\n" +
+	"\fAddMyProduct\x12$.stockchecker.v1.AddMyProductRequest\x1a%.stockchecker.v1.AddMyProductResponse\x12d\n" +
+	"\x0fRemoveMyProduct\x12'.stockchecker.v1.RemoveMyProductRequest\x1a(.stockchecker.v1.RemoveMyProductResponseB\xce\x01\n" +
 	"\x13com.stockchecker.v1B\fServiceProtoP\x01ZLgithub.com/tmcauley/stock-checker/backend/gen/stockchecker/v1;stockcheckerv1\xa2\x02\x03SXX\xaa\x02\x0fStockchecker.V1\xca\x02\x0fStockchecker\\V1\xe2\x02\x1bStockchecker\\V1\\GPBMetadata\xea\x02\x10Stockchecker::V1b\x06proto3"
 
 var (
@@ -625,35 +1303,69 @@ func file_stockchecker_v1_service_proto_rawDescGZIP() []byte {
 	return file_stockchecker_v1_service_proto_rawDescData
 }
 
-var file_stockchecker_v1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_stockchecker_v1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_stockchecker_v1_service_proto_goTypes = []any{
-	(*Store)(nil),                  // 0: stockchecker.v1.Store
-	(*Product)(nil),                // 1: stockchecker.v1.Product
-	(*StockStatus)(nil),            // 2: stockchecker.v1.StockStatus
-	(*SearchStoresRequest)(nil),    // 3: stockchecker.v1.SearchStoresRequest
-	(*SearchStoresResponse)(nil),   // 4: stockchecker.v1.SearchStoresResponse
-	(*SearchProductsRequest)(nil),  // 5: stockchecker.v1.SearchProductsRequest
-	(*SearchProductsResponse)(nil), // 6: stockchecker.v1.SearchProductsResponse
-	(*CheckStockRequest)(nil),      // 7: stockchecker.v1.CheckStockRequest
-	(*CheckStockResponse)(nil),     // 8: stockchecker.v1.CheckStockResponse
+	(*Store)(nil),                   // 0: stockchecker.v1.Store
+	(*Product)(nil),                 // 1: stockchecker.v1.Product
+	(*StockStatus)(nil),             // 2: stockchecker.v1.StockStatus
+	(*User)(nil),                    // 3: stockchecker.v1.User
+	(*SearchStoresRequest)(nil),     // 4: stockchecker.v1.SearchStoresRequest
+	(*SearchStoresResponse)(nil),    // 5: stockchecker.v1.SearchStoresResponse
+	(*SearchProductsRequest)(nil),   // 6: stockchecker.v1.SearchProductsRequest
+	(*SearchProductsResponse)(nil),  // 7: stockchecker.v1.SearchProductsResponse
+	(*CheckStockRequest)(nil),       // 8: stockchecker.v1.CheckStockRequest
+	(*CheckStockResponse)(nil),      // 9: stockchecker.v1.CheckStockResponse
+	(*GetCurrentUserRequest)(nil),   // 10: stockchecker.v1.GetCurrentUserRequest
+	(*GetCurrentUserResponse)(nil),  // 11: stockchecker.v1.GetCurrentUserResponse
+	(*GetMyStoresRequest)(nil),      // 12: stockchecker.v1.GetMyStoresRequest
+	(*GetMyStoresResponse)(nil),     // 13: stockchecker.v1.GetMyStoresResponse
+	(*AddMyStoreRequest)(nil),       // 14: stockchecker.v1.AddMyStoreRequest
+	(*AddMyStoreResponse)(nil),      // 15: stockchecker.v1.AddMyStoreResponse
+	(*RemoveMyStoreRequest)(nil),    // 16: stockchecker.v1.RemoveMyStoreRequest
+	(*RemoveMyStoreResponse)(nil),   // 17: stockchecker.v1.RemoveMyStoreResponse
+	(*GetMyProductsRequest)(nil),    // 18: stockchecker.v1.GetMyProductsRequest
+	(*GetMyProductsResponse)(nil),   // 19: stockchecker.v1.GetMyProductsResponse
+	(*AddMyProductRequest)(nil),     // 20: stockchecker.v1.AddMyProductRequest
+	(*AddMyProductResponse)(nil),    // 21: stockchecker.v1.AddMyProductResponse
+	(*RemoveMyProductRequest)(nil),  // 22: stockchecker.v1.RemoveMyProductRequest
+	(*RemoveMyProductResponse)(nil), // 23: stockchecker.v1.RemoveMyProductResponse
 }
 var file_stockchecker_v1_service_proto_depIdxs = []int32{
-	0, // 0: stockchecker.v1.StockStatus.store:type_name -> stockchecker.v1.Store
-	1, // 1: stockchecker.v1.StockStatus.product:type_name -> stockchecker.v1.Product
-	0, // 2: stockchecker.v1.SearchStoresResponse.stores:type_name -> stockchecker.v1.Store
-	1, // 3: stockchecker.v1.SearchProductsResponse.products:type_name -> stockchecker.v1.Product
-	2, // 4: stockchecker.v1.CheckStockResponse.results:type_name -> stockchecker.v1.StockStatus
-	3, // 5: stockchecker.v1.StockCheckerService.SearchStores:input_type -> stockchecker.v1.SearchStoresRequest
-	5, // 6: stockchecker.v1.StockCheckerService.SearchProducts:input_type -> stockchecker.v1.SearchProductsRequest
-	7, // 7: stockchecker.v1.StockCheckerService.CheckStock:input_type -> stockchecker.v1.CheckStockRequest
-	4, // 8: stockchecker.v1.StockCheckerService.SearchStores:output_type -> stockchecker.v1.SearchStoresResponse
-	6, // 9: stockchecker.v1.StockCheckerService.SearchProducts:output_type -> stockchecker.v1.SearchProductsResponse
-	8, // 10: stockchecker.v1.StockCheckerService.CheckStock:output_type -> stockchecker.v1.CheckStockResponse
-	8, // [8:11] is the sub-list for method output_type
-	5, // [5:8] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	0,  // 0: stockchecker.v1.StockStatus.store:type_name -> stockchecker.v1.Store
+	1,  // 1: stockchecker.v1.StockStatus.product:type_name -> stockchecker.v1.Product
+	0,  // 2: stockchecker.v1.SearchStoresResponse.stores:type_name -> stockchecker.v1.Store
+	1,  // 3: stockchecker.v1.SearchProductsResponse.products:type_name -> stockchecker.v1.Product
+	2,  // 4: stockchecker.v1.CheckStockResponse.results:type_name -> stockchecker.v1.StockStatus
+	3,  // 5: stockchecker.v1.GetCurrentUserResponse.user:type_name -> stockchecker.v1.User
+	0,  // 6: stockchecker.v1.GetMyStoresResponse.stores:type_name -> stockchecker.v1.Store
+	0,  // 7: stockchecker.v1.AddMyStoreRequest.store:type_name -> stockchecker.v1.Store
+	1,  // 8: stockchecker.v1.GetMyProductsResponse.products:type_name -> stockchecker.v1.Product
+	1,  // 9: stockchecker.v1.AddMyProductRequest.product:type_name -> stockchecker.v1.Product
+	4,  // 10: stockchecker.v1.StockCheckerService.SearchStores:input_type -> stockchecker.v1.SearchStoresRequest
+	6,  // 11: stockchecker.v1.StockCheckerService.SearchProducts:input_type -> stockchecker.v1.SearchProductsRequest
+	8,  // 12: stockchecker.v1.StockCheckerService.CheckStock:input_type -> stockchecker.v1.CheckStockRequest
+	10, // 13: stockchecker.v1.StockCheckerService.GetCurrentUser:input_type -> stockchecker.v1.GetCurrentUserRequest
+	12, // 14: stockchecker.v1.StockCheckerService.GetMyStores:input_type -> stockchecker.v1.GetMyStoresRequest
+	14, // 15: stockchecker.v1.StockCheckerService.AddMyStore:input_type -> stockchecker.v1.AddMyStoreRequest
+	16, // 16: stockchecker.v1.StockCheckerService.RemoveMyStore:input_type -> stockchecker.v1.RemoveMyStoreRequest
+	18, // 17: stockchecker.v1.StockCheckerService.GetMyProducts:input_type -> stockchecker.v1.GetMyProductsRequest
+	20, // 18: stockchecker.v1.StockCheckerService.AddMyProduct:input_type -> stockchecker.v1.AddMyProductRequest
+	22, // 19: stockchecker.v1.StockCheckerService.RemoveMyProduct:input_type -> stockchecker.v1.RemoveMyProductRequest
+	5,  // 20: stockchecker.v1.StockCheckerService.SearchStores:output_type -> stockchecker.v1.SearchStoresResponse
+	7,  // 21: stockchecker.v1.StockCheckerService.SearchProducts:output_type -> stockchecker.v1.SearchProductsResponse
+	9,  // 22: stockchecker.v1.StockCheckerService.CheckStock:output_type -> stockchecker.v1.CheckStockResponse
+	11, // 23: stockchecker.v1.StockCheckerService.GetCurrentUser:output_type -> stockchecker.v1.GetCurrentUserResponse
+	13, // 24: stockchecker.v1.StockCheckerService.GetMyStores:output_type -> stockchecker.v1.GetMyStoresResponse
+	15, // 25: stockchecker.v1.StockCheckerService.AddMyStore:output_type -> stockchecker.v1.AddMyStoreResponse
+	17, // 26: stockchecker.v1.StockCheckerService.RemoveMyStore:output_type -> stockchecker.v1.RemoveMyStoreResponse
+	19, // 27: stockchecker.v1.StockCheckerService.GetMyProducts:output_type -> stockchecker.v1.GetMyProductsResponse
+	21, // 28: stockchecker.v1.StockCheckerService.AddMyProduct:output_type -> stockchecker.v1.AddMyProductResponse
+	23, // 29: stockchecker.v1.StockCheckerService.RemoveMyProduct:output_type -> stockchecker.v1.RemoveMyProductResponse
+	20, // [20:30] is the sub-list for method output_type
+	10, // [10:20] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_stockchecker_v1_service_proto_init() }
@@ -667,7 +1379,7 @@ func file_stockchecker_v1_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_stockchecker_v1_service_proto_rawDesc), len(file_stockchecker_v1_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

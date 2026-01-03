@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useMyStores } from '../context/MyStoresContext'
 import { useMyProducts } from '../context/MyProductsContext'
+import { useAuth } from '../context/AuthContext'
 
 interface LayoutProps {
   children: ReactNode
@@ -12,6 +13,7 @@ export function Layout({ children }: LayoutProps) {
   const navigate = useNavigate()
   const { stores: myStores } = useMyStores()
   const { products: myProducts } = useMyProducts()
+  const { user, isLoading: authLoading, isAuthenticated, login, logout } = useAuth()
 
   const canCheckStock = myStores.length > 0 && myProducts.length > 0
 
@@ -55,6 +57,33 @@ export function Layout({ children }: LayoutProps) {
                 <span className="hidden sm:inline">Check Stock</span>
                 <span className="sm:hidden">Check</span>
               </button>
+
+              {/* Auth controls */}
+              {authLoading ? (
+                <div className="w-8 h-8 rounded-full bg-blue-500 animate-pulse" />
+              ) : isAuthenticated && user ? (
+                <div className="flex items-center gap-2">
+                  <img
+                    src={user.pictureUrl}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full border-2 border-blue-400"
+                    title={user.name}
+                  />
+                  <button
+                    onClick={logout}
+                    className="hidden sm:block px-3 py-1.5 text-sm text-blue-200 hover:text-white transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={login}
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-sm sm:text-base"
+                >
+                  Login
+                </button>
+              )}
             </div>
           </div>
           <nav className="flex gap-1 pb-2 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">

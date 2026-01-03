@@ -42,6 +42,27 @@ const (
 	// StockCheckerServiceCheckStockProcedure is the fully-qualified name of the StockCheckerService's
 	// CheckStock RPC.
 	StockCheckerServiceCheckStockProcedure = "/stockchecker.v1.StockCheckerService/CheckStock"
+	// StockCheckerServiceGetCurrentUserProcedure is the fully-qualified name of the
+	// StockCheckerService's GetCurrentUser RPC.
+	StockCheckerServiceGetCurrentUserProcedure = "/stockchecker.v1.StockCheckerService/GetCurrentUser"
+	// StockCheckerServiceGetMyStoresProcedure is the fully-qualified name of the StockCheckerService's
+	// GetMyStores RPC.
+	StockCheckerServiceGetMyStoresProcedure = "/stockchecker.v1.StockCheckerService/GetMyStores"
+	// StockCheckerServiceAddMyStoreProcedure is the fully-qualified name of the StockCheckerService's
+	// AddMyStore RPC.
+	StockCheckerServiceAddMyStoreProcedure = "/stockchecker.v1.StockCheckerService/AddMyStore"
+	// StockCheckerServiceRemoveMyStoreProcedure is the fully-qualified name of the
+	// StockCheckerService's RemoveMyStore RPC.
+	StockCheckerServiceRemoveMyStoreProcedure = "/stockchecker.v1.StockCheckerService/RemoveMyStore"
+	// StockCheckerServiceGetMyProductsProcedure is the fully-qualified name of the
+	// StockCheckerService's GetMyProducts RPC.
+	StockCheckerServiceGetMyProductsProcedure = "/stockchecker.v1.StockCheckerService/GetMyProducts"
+	// StockCheckerServiceAddMyProductProcedure is the fully-qualified name of the StockCheckerService's
+	// AddMyProduct RPC.
+	StockCheckerServiceAddMyProductProcedure = "/stockchecker.v1.StockCheckerService/AddMyProduct"
+	// StockCheckerServiceRemoveMyProductProcedure is the fully-qualified name of the
+	// StockCheckerService's RemoveMyProduct RPC.
+	StockCheckerServiceRemoveMyProductProcedure = "/stockchecker.v1.StockCheckerService/RemoveMyProduct"
 )
 
 // StockCheckerServiceClient is a client for the stockchecker.v1.StockCheckerService service.
@@ -52,6 +73,20 @@ type StockCheckerServiceClient interface {
 	SearchProducts(context.Context, *connect.Request[v1.SearchProductsRequest]) (*connect.Response[v1.SearchProductsResponse], error)
 	// CheckStock checks inventory for products at specified stores
 	CheckStock(context.Context, *connect.Request[v1.CheckStockRequest]) (*connect.Response[v1.CheckStockResponse], error)
+	// GetCurrentUser returns the currently authenticated user
+	GetCurrentUser(context.Context, *connect.Request[v1.GetCurrentUserRequest]) (*connect.Response[v1.GetCurrentUserResponse], error)
+	// GetMyStores returns the user's saved stores
+	GetMyStores(context.Context, *connect.Request[v1.GetMyStoresRequest]) (*connect.Response[v1.GetMyStoresResponse], error)
+	// AddMyStore adds a store to the user's list
+	AddMyStore(context.Context, *connect.Request[v1.AddMyStoreRequest]) (*connect.Response[v1.AddMyStoreResponse], error)
+	// RemoveMyStore removes a store from the user's list
+	RemoveMyStore(context.Context, *connect.Request[v1.RemoveMyStoreRequest]) (*connect.Response[v1.RemoveMyStoreResponse], error)
+	// GetMyProducts returns the user's saved products
+	GetMyProducts(context.Context, *connect.Request[v1.GetMyProductsRequest]) (*connect.Response[v1.GetMyProductsResponse], error)
+	// AddMyProduct adds a product to the user's list
+	AddMyProduct(context.Context, *connect.Request[v1.AddMyProductRequest]) (*connect.Response[v1.AddMyProductResponse], error)
+	// RemoveMyProduct removes a product from the user's list
+	RemoveMyProduct(context.Context, *connect.Request[v1.RemoveMyProductRequest]) (*connect.Response[v1.RemoveMyProductResponse], error)
 }
 
 // NewStockCheckerServiceClient constructs a client for the stockchecker.v1.StockCheckerService
@@ -83,14 +118,63 @@ func NewStockCheckerServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(stockCheckerServiceMethods.ByName("CheckStock")),
 			connect.WithClientOptions(opts...),
 		),
+		getCurrentUser: connect.NewClient[v1.GetCurrentUserRequest, v1.GetCurrentUserResponse](
+			httpClient,
+			baseURL+StockCheckerServiceGetCurrentUserProcedure,
+			connect.WithSchema(stockCheckerServiceMethods.ByName("GetCurrentUser")),
+			connect.WithClientOptions(opts...),
+		),
+		getMyStores: connect.NewClient[v1.GetMyStoresRequest, v1.GetMyStoresResponse](
+			httpClient,
+			baseURL+StockCheckerServiceGetMyStoresProcedure,
+			connect.WithSchema(stockCheckerServiceMethods.ByName("GetMyStores")),
+			connect.WithClientOptions(opts...),
+		),
+		addMyStore: connect.NewClient[v1.AddMyStoreRequest, v1.AddMyStoreResponse](
+			httpClient,
+			baseURL+StockCheckerServiceAddMyStoreProcedure,
+			connect.WithSchema(stockCheckerServiceMethods.ByName("AddMyStore")),
+			connect.WithClientOptions(opts...),
+		),
+		removeMyStore: connect.NewClient[v1.RemoveMyStoreRequest, v1.RemoveMyStoreResponse](
+			httpClient,
+			baseURL+StockCheckerServiceRemoveMyStoreProcedure,
+			connect.WithSchema(stockCheckerServiceMethods.ByName("RemoveMyStore")),
+			connect.WithClientOptions(opts...),
+		),
+		getMyProducts: connect.NewClient[v1.GetMyProductsRequest, v1.GetMyProductsResponse](
+			httpClient,
+			baseURL+StockCheckerServiceGetMyProductsProcedure,
+			connect.WithSchema(stockCheckerServiceMethods.ByName("GetMyProducts")),
+			connect.WithClientOptions(opts...),
+		),
+		addMyProduct: connect.NewClient[v1.AddMyProductRequest, v1.AddMyProductResponse](
+			httpClient,
+			baseURL+StockCheckerServiceAddMyProductProcedure,
+			connect.WithSchema(stockCheckerServiceMethods.ByName("AddMyProduct")),
+			connect.WithClientOptions(opts...),
+		),
+		removeMyProduct: connect.NewClient[v1.RemoveMyProductRequest, v1.RemoveMyProductResponse](
+			httpClient,
+			baseURL+StockCheckerServiceRemoveMyProductProcedure,
+			connect.WithSchema(stockCheckerServiceMethods.ByName("RemoveMyProduct")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // stockCheckerServiceClient implements StockCheckerServiceClient.
 type stockCheckerServiceClient struct {
-	searchStores   *connect.Client[v1.SearchStoresRequest, v1.SearchStoresResponse]
-	searchProducts *connect.Client[v1.SearchProductsRequest, v1.SearchProductsResponse]
-	checkStock     *connect.Client[v1.CheckStockRequest, v1.CheckStockResponse]
+	searchStores    *connect.Client[v1.SearchStoresRequest, v1.SearchStoresResponse]
+	searchProducts  *connect.Client[v1.SearchProductsRequest, v1.SearchProductsResponse]
+	checkStock      *connect.Client[v1.CheckStockRequest, v1.CheckStockResponse]
+	getCurrentUser  *connect.Client[v1.GetCurrentUserRequest, v1.GetCurrentUserResponse]
+	getMyStores     *connect.Client[v1.GetMyStoresRequest, v1.GetMyStoresResponse]
+	addMyStore      *connect.Client[v1.AddMyStoreRequest, v1.AddMyStoreResponse]
+	removeMyStore   *connect.Client[v1.RemoveMyStoreRequest, v1.RemoveMyStoreResponse]
+	getMyProducts   *connect.Client[v1.GetMyProductsRequest, v1.GetMyProductsResponse]
+	addMyProduct    *connect.Client[v1.AddMyProductRequest, v1.AddMyProductResponse]
+	removeMyProduct *connect.Client[v1.RemoveMyProductRequest, v1.RemoveMyProductResponse]
 }
 
 // SearchStores calls stockchecker.v1.StockCheckerService.SearchStores.
@@ -108,6 +192,41 @@ func (c *stockCheckerServiceClient) CheckStock(ctx context.Context, req *connect
 	return c.checkStock.CallUnary(ctx, req)
 }
 
+// GetCurrentUser calls stockchecker.v1.StockCheckerService.GetCurrentUser.
+func (c *stockCheckerServiceClient) GetCurrentUser(ctx context.Context, req *connect.Request[v1.GetCurrentUserRequest]) (*connect.Response[v1.GetCurrentUserResponse], error) {
+	return c.getCurrentUser.CallUnary(ctx, req)
+}
+
+// GetMyStores calls stockchecker.v1.StockCheckerService.GetMyStores.
+func (c *stockCheckerServiceClient) GetMyStores(ctx context.Context, req *connect.Request[v1.GetMyStoresRequest]) (*connect.Response[v1.GetMyStoresResponse], error) {
+	return c.getMyStores.CallUnary(ctx, req)
+}
+
+// AddMyStore calls stockchecker.v1.StockCheckerService.AddMyStore.
+func (c *stockCheckerServiceClient) AddMyStore(ctx context.Context, req *connect.Request[v1.AddMyStoreRequest]) (*connect.Response[v1.AddMyStoreResponse], error) {
+	return c.addMyStore.CallUnary(ctx, req)
+}
+
+// RemoveMyStore calls stockchecker.v1.StockCheckerService.RemoveMyStore.
+func (c *stockCheckerServiceClient) RemoveMyStore(ctx context.Context, req *connect.Request[v1.RemoveMyStoreRequest]) (*connect.Response[v1.RemoveMyStoreResponse], error) {
+	return c.removeMyStore.CallUnary(ctx, req)
+}
+
+// GetMyProducts calls stockchecker.v1.StockCheckerService.GetMyProducts.
+func (c *stockCheckerServiceClient) GetMyProducts(ctx context.Context, req *connect.Request[v1.GetMyProductsRequest]) (*connect.Response[v1.GetMyProductsResponse], error) {
+	return c.getMyProducts.CallUnary(ctx, req)
+}
+
+// AddMyProduct calls stockchecker.v1.StockCheckerService.AddMyProduct.
+func (c *stockCheckerServiceClient) AddMyProduct(ctx context.Context, req *connect.Request[v1.AddMyProductRequest]) (*connect.Response[v1.AddMyProductResponse], error) {
+	return c.addMyProduct.CallUnary(ctx, req)
+}
+
+// RemoveMyProduct calls stockchecker.v1.StockCheckerService.RemoveMyProduct.
+func (c *stockCheckerServiceClient) RemoveMyProduct(ctx context.Context, req *connect.Request[v1.RemoveMyProductRequest]) (*connect.Response[v1.RemoveMyProductResponse], error) {
+	return c.removeMyProduct.CallUnary(ctx, req)
+}
+
 // StockCheckerServiceHandler is an implementation of the stockchecker.v1.StockCheckerService
 // service.
 type StockCheckerServiceHandler interface {
@@ -117,6 +236,20 @@ type StockCheckerServiceHandler interface {
 	SearchProducts(context.Context, *connect.Request[v1.SearchProductsRequest]) (*connect.Response[v1.SearchProductsResponse], error)
 	// CheckStock checks inventory for products at specified stores
 	CheckStock(context.Context, *connect.Request[v1.CheckStockRequest]) (*connect.Response[v1.CheckStockResponse], error)
+	// GetCurrentUser returns the currently authenticated user
+	GetCurrentUser(context.Context, *connect.Request[v1.GetCurrentUserRequest]) (*connect.Response[v1.GetCurrentUserResponse], error)
+	// GetMyStores returns the user's saved stores
+	GetMyStores(context.Context, *connect.Request[v1.GetMyStoresRequest]) (*connect.Response[v1.GetMyStoresResponse], error)
+	// AddMyStore adds a store to the user's list
+	AddMyStore(context.Context, *connect.Request[v1.AddMyStoreRequest]) (*connect.Response[v1.AddMyStoreResponse], error)
+	// RemoveMyStore removes a store from the user's list
+	RemoveMyStore(context.Context, *connect.Request[v1.RemoveMyStoreRequest]) (*connect.Response[v1.RemoveMyStoreResponse], error)
+	// GetMyProducts returns the user's saved products
+	GetMyProducts(context.Context, *connect.Request[v1.GetMyProductsRequest]) (*connect.Response[v1.GetMyProductsResponse], error)
+	// AddMyProduct adds a product to the user's list
+	AddMyProduct(context.Context, *connect.Request[v1.AddMyProductRequest]) (*connect.Response[v1.AddMyProductResponse], error)
+	// RemoveMyProduct removes a product from the user's list
+	RemoveMyProduct(context.Context, *connect.Request[v1.RemoveMyProductRequest]) (*connect.Response[v1.RemoveMyProductResponse], error)
 }
 
 // NewStockCheckerServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -144,6 +277,48 @@ func NewStockCheckerServiceHandler(svc StockCheckerServiceHandler, opts ...conne
 		connect.WithSchema(stockCheckerServiceMethods.ByName("CheckStock")),
 		connect.WithHandlerOptions(opts...),
 	)
+	stockCheckerServiceGetCurrentUserHandler := connect.NewUnaryHandler(
+		StockCheckerServiceGetCurrentUserProcedure,
+		svc.GetCurrentUser,
+		connect.WithSchema(stockCheckerServiceMethods.ByName("GetCurrentUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stockCheckerServiceGetMyStoresHandler := connect.NewUnaryHandler(
+		StockCheckerServiceGetMyStoresProcedure,
+		svc.GetMyStores,
+		connect.WithSchema(stockCheckerServiceMethods.ByName("GetMyStores")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stockCheckerServiceAddMyStoreHandler := connect.NewUnaryHandler(
+		StockCheckerServiceAddMyStoreProcedure,
+		svc.AddMyStore,
+		connect.WithSchema(stockCheckerServiceMethods.ByName("AddMyStore")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stockCheckerServiceRemoveMyStoreHandler := connect.NewUnaryHandler(
+		StockCheckerServiceRemoveMyStoreProcedure,
+		svc.RemoveMyStore,
+		connect.WithSchema(stockCheckerServiceMethods.ByName("RemoveMyStore")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stockCheckerServiceGetMyProductsHandler := connect.NewUnaryHandler(
+		StockCheckerServiceGetMyProductsProcedure,
+		svc.GetMyProducts,
+		connect.WithSchema(stockCheckerServiceMethods.ByName("GetMyProducts")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stockCheckerServiceAddMyProductHandler := connect.NewUnaryHandler(
+		StockCheckerServiceAddMyProductProcedure,
+		svc.AddMyProduct,
+		connect.WithSchema(stockCheckerServiceMethods.ByName("AddMyProduct")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stockCheckerServiceRemoveMyProductHandler := connect.NewUnaryHandler(
+		StockCheckerServiceRemoveMyProductProcedure,
+		svc.RemoveMyProduct,
+		connect.WithSchema(stockCheckerServiceMethods.ByName("RemoveMyProduct")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/stockchecker.v1.StockCheckerService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case StockCheckerServiceSearchStoresProcedure:
@@ -152,6 +327,20 @@ func NewStockCheckerServiceHandler(svc StockCheckerServiceHandler, opts ...conne
 			stockCheckerServiceSearchProductsHandler.ServeHTTP(w, r)
 		case StockCheckerServiceCheckStockProcedure:
 			stockCheckerServiceCheckStockHandler.ServeHTTP(w, r)
+		case StockCheckerServiceGetCurrentUserProcedure:
+			stockCheckerServiceGetCurrentUserHandler.ServeHTTP(w, r)
+		case StockCheckerServiceGetMyStoresProcedure:
+			stockCheckerServiceGetMyStoresHandler.ServeHTTP(w, r)
+		case StockCheckerServiceAddMyStoreProcedure:
+			stockCheckerServiceAddMyStoreHandler.ServeHTTP(w, r)
+		case StockCheckerServiceRemoveMyStoreProcedure:
+			stockCheckerServiceRemoveMyStoreHandler.ServeHTTP(w, r)
+		case StockCheckerServiceGetMyProductsProcedure:
+			stockCheckerServiceGetMyProductsHandler.ServeHTTP(w, r)
+		case StockCheckerServiceAddMyProductProcedure:
+			stockCheckerServiceAddMyProductHandler.ServeHTTP(w, r)
+		case StockCheckerServiceRemoveMyProductProcedure:
+			stockCheckerServiceRemoveMyProductHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -171,4 +360,32 @@ func (UnimplementedStockCheckerServiceHandler) SearchProducts(context.Context, *
 
 func (UnimplementedStockCheckerServiceHandler) CheckStock(context.Context, *connect.Request[v1.CheckStockRequest]) (*connect.Response[v1.CheckStockResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.CheckStock is not implemented"))
+}
+
+func (UnimplementedStockCheckerServiceHandler) GetCurrentUser(context.Context, *connect.Request[v1.GetCurrentUserRequest]) (*connect.Response[v1.GetCurrentUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.GetCurrentUser is not implemented"))
+}
+
+func (UnimplementedStockCheckerServiceHandler) GetMyStores(context.Context, *connect.Request[v1.GetMyStoresRequest]) (*connect.Response[v1.GetMyStoresResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.GetMyStores is not implemented"))
+}
+
+func (UnimplementedStockCheckerServiceHandler) AddMyStore(context.Context, *connect.Request[v1.AddMyStoreRequest]) (*connect.Response[v1.AddMyStoreResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.AddMyStore is not implemented"))
+}
+
+func (UnimplementedStockCheckerServiceHandler) RemoveMyStore(context.Context, *connect.Request[v1.RemoveMyStoreRequest]) (*connect.Response[v1.RemoveMyStoreResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.RemoveMyStore is not implemented"))
+}
+
+func (UnimplementedStockCheckerServiceHandler) GetMyProducts(context.Context, *connect.Request[v1.GetMyProductsRequest]) (*connect.Response[v1.GetMyProductsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.GetMyProducts is not implemented"))
+}
+
+func (UnimplementedStockCheckerServiceHandler) AddMyProduct(context.Context, *connect.Request[v1.AddMyProductRequest]) (*connect.Response[v1.AddMyProductResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.AddMyProduct is not implemented"))
+}
+
+func (UnimplementedStockCheckerServiceHandler) RemoveMyProduct(context.Context, *connect.Request[v1.RemoveMyProductRequest]) (*connect.Response[v1.RemoveMyProductResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("stockchecker.v1.StockCheckerService.RemoveMyProduct is not implemented"))
 }

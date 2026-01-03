@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
 import { MyStoresProvider } from './context/MyStoresContext'
 import { MyProductsProvider } from './context/MyProductsContext'
 import { ToastProvider } from './components/Toast'
@@ -13,23 +14,25 @@ import { CheckStock } from './pages/CheckStock'
 function App() {
   return (
     <BrowserRouter>
-      <ToastProvider>
-        <MyStoresProvider>
-          <MyProductsProvider>
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/stores" element={<MyStores />} />
-                <Route path="/stores/search" element={<StoreSearch />} />
-                <Route path="/products" element={<MyProducts />} />
-                <Route path="/products/search" element={<ProductSearch />} />
-                <Route path="/check-stock" element={<CheckStock />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Layout>
-          </MyProductsProvider>
-        </MyStoresProvider>
-      </ToastProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <MyStoresProvider>
+            <MyProductsProvider>
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/stores" element={<MyStores />} />
+                  <Route path="/stores/search" element={<StoreSearch />} />
+                  <Route path="/products" element={<MyProducts />} />
+                  <Route path="/products/search" element={<ProductSearch />} />
+                  <Route path="/check-stock" element={<CheckStock />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Layout>
+            </MyProductsProvider>
+          </MyStoresProvider>
+        </ToastProvider>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

@@ -32,6 +32,14 @@ message StockStatus {
   bool pickup_eligible = 5;
 }
 
+// User represents an authenticated user
+message User {
+  int32 id = 1;
+  string email = 2;
+  string name = 3;
+  string picture_url = 4;
+}
+
 // SearchStoresRequest is the request for searching stores
 message SearchStoresRequest {
   string postal_code = 1;
@@ -64,6 +72,62 @@ message CheckStockResponse {
   repeated StockStatus results = 1;
 }
 
+// GetCurrentUserRequest is empty - user is determined from session
+message GetCurrentUserRequest {}
+
+// GetCurrentUserResponse returns the current user
+message GetCurrentUserResponse {
+  User user = 1;
+}
+
+// GetMyStoresRequest is empty - user is determined from session
+message GetMyStoresRequest {}
+
+// GetMyStoresResponse returns the user's saved stores
+message GetMyStoresResponse {
+  repeated Store stores = 1;
+}
+
+// AddMyStoreRequest adds a store to the user's list
+message AddMyStoreRequest {
+  Store store = 1;
+}
+
+// AddMyStoreResponse is empty on success
+message AddMyStoreResponse {}
+
+// RemoveMyStoreRequest removes a store from the user's list
+message RemoveMyStoreRequest {
+  string store_id = 1;
+}
+
+// RemoveMyStoreResponse is empty on success
+message RemoveMyStoreResponse {}
+
+// GetMyProductsRequest is empty - user is determined from session
+message GetMyProductsRequest {}
+
+// GetMyProductsResponse returns the user's saved products
+message GetMyProductsResponse {
+  repeated Product products = 1;
+}
+
+// AddMyProductRequest adds a product to the user's list
+message AddMyProductRequest {
+  Product product = 1;
+}
+
+// AddMyProductResponse is empty on success
+message AddMyProductResponse {}
+
+// RemoveMyProductRequest removes a product from the user's list
+message RemoveMyProductRequest {
+  string sku = 1;
+}
+
+// RemoveMyProductResponse is empty on success
+message RemoveMyProductResponse {}
+
 // StockCheckerService provides stock checking functionality
 service StockCheckerService {
   // SearchStores searches for Best Buy stores near a location
@@ -74,4 +138,25 @@ service StockCheckerService {
 
   // CheckStock checks inventory for products at specified stores
   rpc CheckStock(CheckStockRequest) returns (CheckStockResponse);
+
+  // GetCurrentUser returns the currently authenticated user
+  rpc GetCurrentUser(GetCurrentUserRequest) returns (GetCurrentUserResponse);
+
+  // GetMyStores returns the user's saved stores
+  rpc GetMyStores(GetMyStoresRequest) returns (GetMyStoresResponse);
+
+  // AddMyStore adds a store to the user's list
+  rpc AddMyStore(AddMyStoreRequest) returns (AddMyStoreResponse);
+
+  // RemoveMyStore removes a store from the user's list
+  rpc RemoveMyStore(RemoveMyStoreRequest) returns (RemoveMyStoreResponse);
+
+  // GetMyProducts returns the user's saved products
+  rpc GetMyProducts(GetMyProductsRequest) returns (GetMyProductsResponse);
+
+  // AddMyProduct adds a product to the user's list
+  rpc AddMyProduct(AddMyProductRequest) returns (AddMyProductResponse);
+
+  // RemoveMyProduct removes a product from the user's list
+  rpc RemoveMyProduct(RemoveMyProductRequest) returns (RemoveMyProductResponse);
 }

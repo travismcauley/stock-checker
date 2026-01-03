@@ -140,6 +140,39 @@ export declare type StockStatus = Message<"stockchecker.v1.StockStatus"> & {
 export declare const StockStatusSchema: GenMessage<StockStatus>;
 
 /**
+ * User represents an authenticated user
+ *
+ * @generated from message stockchecker.v1.User
+ */
+export declare type User = Message<"stockchecker.v1.User"> & {
+  /**
+   * @generated from field: int32 id = 1;
+   */
+  id: number;
+
+  /**
+   * @generated from field: string email = 2;
+   */
+  email: string;
+
+  /**
+   * @generated from field: string name = 3;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string picture_url = 4;
+   */
+  pictureUrl: string;
+};
+
+/**
+ * Describes the message stockchecker.v1.User.
+ * Use `create(UserSchema)` to create a new message.
+ */
+export declare const UserSchema: GenMessage<User>;
+
+/**
  * SearchStoresRequest is the request for searching stores
  *
  * @generated from message stockchecker.v1.SearchStoresRequest
@@ -262,6 +295,230 @@ export declare type CheckStockResponse = Message<"stockchecker.v1.CheckStockResp
 export declare const CheckStockResponseSchema: GenMessage<CheckStockResponse>;
 
 /**
+ * GetCurrentUserRequest is empty - user is determined from session
+ *
+ * @generated from message stockchecker.v1.GetCurrentUserRequest
+ */
+export declare type GetCurrentUserRequest = Message<"stockchecker.v1.GetCurrentUserRequest"> & {
+};
+
+/**
+ * Describes the message stockchecker.v1.GetCurrentUserRequest.
+ * Use `create(GetCurrentUserRequestSchema)` to create a new message.
+ */
+export declare const GetCurrentUserRequestSchema: GenMessage<GetCurrentUserRequest>;
+
+/**
+ * GetCurrentUserResponse returns the current user
+ *
+ * @generated from message stockchecker.v1.GetCurrentUserResponse
+ */
+export declare type GetCurrentUserResponse = Message<"stockchecker.v1.GetCurrentUserResponse"> & {
+  /**
+   * @generated from field: stockchecker.v1.User user = 1;
+   */
+  user?: User;
+};
+
+/**
+ * Describes the message stockchecker.v1.GetCurrentUserResponse.
+ * Use `create(GetCurrentUserResponseSchema)` to create a new message.
+ */
+export declare const GetCurrentUserResponseSchema: GenMessage<GetCurrentUserResponse>;
+
+/**
+ * GetMyStoresRequest is empty - user is determined from session
+ *
+ * @generated from message stockchecker.v1.GetMyStoresRequest
+ */
+export declare type GetMyStoresRequest = Message<"stockchecker.v1.GetMyStoresRequest"> & {
+};
+
+/**
+ * Describes the message stockchecker.v1.GetMyStoresRequest.
+ * Use `create(GetMyStoresRequestSchema)` to create a new message.
+ */
+export declare const GetMyStoresRequestSchema: GenMessage<GetMyStoresRequest>;
+
+/**
+ * GetMyStoresResponse returns the user's saved stores
+ *
+ * @generated from message stockchecker.v1.GetMyStoresResponse
+ */
+export declare type GetMyStoresResponse = Message<"stockchecker.v1.GetMyStoresResponse"> & {
+  /**
+   * @generated from field: repeated stockchecker.v1.Store stores = 1;
+   */
+  stores: Store[];
+};
+
+/**
+ * Describes the message stockchecker.v1.GetMyStoresResponse.
+ * Use `create(GetMyStoresResponseSchema)` to create a new message.
+ */
+export declare const GetMyStoresResponseSchema: GenMessage<GetMyStoresResponse>;
+
+/**
+ * AddMyStoreRequest adds a store to the user's list
+ *
+ * @generated from message stockchecker.v1.AddMyStoreRequest
+ */
+export declare type AddMyStoreRequest = Message<"stockchecker.v1.AddMyStoreRequest"> & {
+  /**
+   * @generated from field: stockchecker.v1.Store store = 1;
+   */
+  store?: Store;
+};
+
+/**
+ * Describes the message stockchecker.v1.AddMyStoreRequest.
+ * Use `create(AddMyStoreRequestSchema)` to create a new message.
+ */
+export declare const AddMyStoreRequestSchema: GenMessage<AddMyStoreRequest>;
+
+/**
+ * AddMyStoreResponse is empty on success
+ *
+ * @generated from message stockchecker.v1.AddMyStoreResponse
+ */
+export declare type AddMyStoreResponse = Message<"stockchecker.v1.AddMyStoreResponse"> & {
+};
+
+/**
+ * Describes the message stockchecker.v1.AddMyStoreResponse.
+ * Use `create(AddMyStoreResponseSchema)` to create a new message.
+ */
+export declare const AddMyStoreResponseSchema: GenMessage<AddMyStoreResponse>;
+
+/**
+ * RemoveMyStoreRequest removes a store from the user's list
+ *
+ * @generated from message stockchecker.v1.RemoveMyStoreRequest
+ */
+export declare type RemoveMyStoreRequest = Message<"stockchecker.v1.RemoveMyStoreRequest"> & {
+  /**
+   * @generated from field: string store_id = 1;
+   */
+  storeId: string;
+};
+
+/**
+ * Describes the message stockchecker.v1.RemoveMyStoreRequest.
+ * Use `create(RemoveMyStoreRequestSchema)` to create a new message.
+ */
+export declare const RemoveMyStoreRequestSchema: GenMessage<RemoveMyStoreRequest>;
+
+/**
+ * RemoveMyStoreResponse is empty on success
+ *
+ * @generated from message stockchecker.v1.RemoveMyStoreResponse
+ */
+export declare type RemoveMyStoreResponse = Message<"stockchecker.v1.RemoveMyStoreResponse"> & {
+};
+
+/**
+ * Describes the message stockchecker.v1.RemoveMyStoreResponse.
+ * Use `create(RemoveMyStoreResponseSchema)` to create a new message.
+ */
+export declare const RemoveMyStoreResponseSchema: GenMessage<RemoveMyStoreResponse>;
+
+/**
+ * GetMyProductsRequest is empty - user is determined from session
+ *
+ * @generated from message stockchecker.v1.GetMyProductsRequest
+ */
+export declare type GetMyProductsRequest = Message<"stockchecker.v1.GetMyProductsRequest"> & {
+};
+
+/**
+ * Describes the message stockchecker.v1.GetMyProductsRequest.
+ * Use `create(GetMyProductsRequestSchema)` to create a new message.
+ */
+export declare const GetMyProductsRequestSchema: GenMessage<GetMyProductsRequest>;
+
+/**
+ * GetMyProductsResponse returns the user's saved products
+ *
+ * @generated from message stockchecker.v1.GetMyProductsResponse
+ */
+export declare type GetMyProductsResponse = Message<"stockchecker.v1.GetMyProductsResponse"> & {
+  /**
+   * @generated from field: repeated stockchecker.v1.Product products = 1;
+   */
+  products: Product[];
+};
+
+/**
+ * Describes the message stockchecker.v1.GetMyProductsResponse.
+ * Use `create(GetMyProductsResponseSchema)` to create a new message.
+ */
+export declare const GetMyProductsResponseSchema: GenMessage<GetMyProductsResponse>;
+
+/**
+ * AddMyProductRequest adds a product to the user's list
+ *
+ * @generated from message stockchecker.v1.AddMyProductRequest
+ */
+export declare type AddMyProductRequest = Message<"stockchecker.v1.AddMyProductRequest"> & {
+  /**
+   * @generated from field: stockchecker.v1.Product product = 1;
+   */
+  product?: Product;
+};
+
+/**
+ * Describes the message stockchecker.v1.AddMyProductRequest.
+ * Use `create(AddMyProductRequestSchema)` to create a new message.
+ */
+export declare const AddMyProductRequestSchema: GenMessage<AddMyProductRequest>;
+
+/**
+ * AddMyProductResponse is empty on success
+ *
+ * @generated from message stockchecker.v1.AddMyProductResponse
+ */
+export declare type AddMyProductResponse = Message<"stockchecker.v1.AddMyProductResponse"> & {
+};
+
+/**
+ * Describes the message stockchecker.v1.AddMyProductResponse.
+ * Use `create(AddMyProductResponseSchema)` to create a new message.
+ */
+export declare const AddMyProductResponseSchema: GenMessage<AddMyProductResponse>;
+
+/**
+ * RemoveMyProductRequest removes a product from the user's list
+ *
+ * @generated from message stockchecker.v1.RemoveMyProductRequest
+ */
+export declare type RemoveMyProductRequest = Message<"stockchecker.v1.RemoveMyProductRequest"> & {
+  /**
+   * @generated from field: string sku = 1;
+   */
+  sku: string;
+};
+
+/**
+ * Describes the message stockchecker.v1.RemoveMyProductRequest.
+ * Use `create(RemoveMyProductRequestSchema)` to create a new message.
+ */
+export declare const RemoveMyProductRequestSchema: GenMessage<RemoveMyProductRequest>;
+
+/**
+ * RemoveMyProductResponse is empty on success
+ *
+ * @generated from message stockchecker.v1.RemoveMyProductResponse
+ */
+export declare type RemoveMyProductResponse = Message<"stockchecker.v1.RemoveMyProductResponse"> & {
+};
+
+/**
+ * Describes the message stockchecker.v1.RemoveMyProductResponse.
+ * Use `create(RemoveMyProductResponseSchema)` to create a new message.
+ */
+export declare const RemoveMyProductResponseSchema: GenMessage<RemoveMyProductResponse>;
+
+/**
  * StockCheckerService provides stock checking functionality
  *
  * @generated from service stockchecker.v1.StockCheckerService
@@ -296,6 +553,76 @@ export declare const StockCheckerService: GenService<{
     methodKind: "unary";
     input: typeof CheckStockRequestSchema;
     output: typeof CheckStockResponseSchema;
+  },
+  /**
+   * GetCurrentUser returns the currently authenticated user
+   *
+   * @generated from rpc stockchecker.v1.StockCheckerService.GetCurrentUser
+   */
+  getCurrentUser: {
+    methodKind: "unary";
+    input: typeof GetCurrentUserRequestSchema;
+    output: typeof GetCurrentUserResponseSchema;
+  },
+  /**
+   * GetMyStores returns the user's saved stores
+   *
+   * @generated from rpc stockchecker.v1.StockCheckerService.GetMyStores
+   */
+  getMyStores: {
+    methodKind: "unary";
+    input: typeof GetMyStoresRequestSchema;
+    output: typeof GetMyStoresResponseSchema;
+  },
+  /**
+   * AddMyStore adds a store to the user's list
+   *
+   * @generated from rpc stockchecker.v1.StockCheckerService.AddMyStore
+   */
+  addMyStore: {
+    methodKind: "unary";
+    input: typeof AddMyStoreRequestSchema;
+    output: typeof AddMyStoreResponseSchema;
+  },
+  /**
+   * RemoveMyStore removes a store from the user's list
+   *
+   * @generated from rpc stockchecker.v1.StockCheckerService.RemoveMyStore
+   */
+  removeMyStore: {
+    methodKind: "unary";
+    input: typeof RemoveMyStoreRequestSchema;
+    output: typeof RemoveMyStoreResponseSchema;
+  },
+  /**
+   * GetMyProducts returns the user's saved products
+   *
+   * @generated from rpc stockchecker.v1.StockCheckerService.GetMyProducts
+   */
+  getMyProducts: {
+    methodKind: "unary";
+    input: typeof GetMyProductsRequestSchema;
+    output: typeof GetMyProductsResponseSchema;
+  },
+  /**
+   * AddMyProduct adds a product to the user's list
+   *
+   * @generated from rpc stockchecker.v1.StockCheckerService.AddMyProduct
+   */
+  addMyProduct: {
+    methodKind: "unary";
+    input: typeof AddMyProductRequestSchema;
+    output: typeof AddMyProductResponseSchema;
+  },
+  /**
+   * RemoveMyProduct removes a product from the user's list
+   *
+   * @generated from rpc stockchecker.v1.StockCheckerService.RemoveMyProduct
+   */
+  removeMyProduct: {
+    methodKind: "unary";
+    input: typeof RemoveMyProductRequestSchema;
+    output: typeof RemoveMyProductResponseSchema;
   },
 }>;
 
