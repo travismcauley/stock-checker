@@ -30,6 +30,7 @@ message StockStatus {
   bool in_stock = 3;
   bool low_stock = 4;
   bool pickup_eligible = 5;
+  bool is_my_store = 6; // True if store is in user's "My Stores" list
 }
 
 // User represents an authenticated user
@@ -64,8 +65,9 @@ message SearchProductsResponse {
 
 // CheckStockRequest is the request for checking stock
 message CheckStockRequest {
-  repeated string store_ids = 1;
+  repeated string store_ids = 1; // User's saved store IDs (for highlighting)
   repeated string skus = 2;
+  string postal_code = 3; // Postal code to search from (250 mile radius)
 }
 
 // CheckStockResponse is the response containing stock status

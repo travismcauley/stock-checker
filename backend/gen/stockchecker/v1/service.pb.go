@@ -207,6 +207,7 @@ type StockStatus struct {
 	InStock        bool                   `protobuf:"varint,3,opt,name=in_stock,json=inStock,proto3" json:"in_stock,omitempty"`
 	LowStock       bool                   `protobuf:"varint,4,opt,name=low_stock,json=lowStock,proto3" json:"low_stock,omitempty"`
 	PickupEligible bool                   `protobuf:"varint,5,opt,name=pickup_eligible,json=pickupEligible,proto3" json:"pickup_eligible,omitempty"`
+	IsMyStore      bool                   `protobuf:"varint,6,opt,name=is_my_store,json=isMyStore,proto3" json:"is_my_store,omitempty"` // True if store is in user's "My Stores" list
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -272,6 +273,13 @@ func (x *StockStatus) GetLowStock() bool {
 func (x *StockStatus) GetPickupEligible() bool {
 	if x != nil {
 		return x.PickupEligible
+	}
+	return false
+}
+
+func (x *StockStatus) GetIsMyStore() bool {
+	if x != nil {
+		return x.IsMyStore
 	}
 	return false
 }
@@ -544,8 +552,9 @@ func (x *SearchProductsResponse) GetProducts() []*Product {
 // CheckStockRequest is the request for checking stock
 type CheckStockRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	StoreIds      []string               `protobuf:"bytes,1,rep,name=store_ids,json=storeIds,proto3" json:"store_ids,omitempty"`
+	StoreIds      []string               `protobuf:"bytes,1,rep,name=store_ids,json=storeIds,proto3" json:"store_ids,omitempty"` // User's saved store IDs (for highlighting)
 	Skus          []string               `protobuf:"bytes,2,rep,name=skus,proto3" json:"skus,omitempty"`
+	PostalCode    string                 `protobuf:"bytes,3,opt,name=postal_code,json=postalCode,proto3" json:"postal_code,omitempty"` // Postal code to search from (250 mile radius)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -592,6 +601,13 @@ func (x *CheckStockRequest) GetSkus() []string {
 		return x.Skus
 	}
 	return nil
+}
+
+func (x *CheckStockRequest) GetPostalCode() string {
+	if x != nil {
+		return x.PostalCode
+	}
+	return ""
 }
 
 // CheckStockResponse is the response containing stock status
@@ -1317,13 +1333,14 @@ const file_stockchecker_v1_service_proto_rawDesc = "" +
 	"sale_price\x18\x03 \x01(\x01R\tsalePrice\x12#\n" +
 	"\rthumbnail_url\x18\x04 \x01(\tR\fthumbnailUrl\x12\x1f\n" +
 	"\vproduct_url\x18\x05 \x01(\tR\n" +
-	"productUrl\"\xd0\x01\n" +
+	"productUrl\"\xf0\x01\n" +
 	"\vStockStatus\x12,\n" +
 	"\x05store\x18\x01 \x01(\v2\x16.stockchecker.v1.StoreR\x05store\x122\n" +
 	"\aproduct\x18\x02 \x01(\v2\x18.stockchecker.v1.ProductR\aproduct\x12\x19\n" +
 	"\bin_stock\x18\x03 \x01(\bR\ainStock\x12\x1b\n" +
 	"\tlow_stock\x18\x04 \x01(\bR\blowStock\x12'\n" +
-	"\x0fpickup_eligible\x18\x05 \x01(\bR\x0epickupEligible\"a\n" +
+	"\x0fpickup_eligible\x18\x05 \x01(\bR\x0epickupEligible\x12\x1e\n" +
+	"\vis_my_store\x18\x06 \x01(\bR\tisMyStore\"a\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
@@ -1340,10 +1357,12 @@ const file_stockchecker_v1_service_proto_rawDesc = "" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12\x1a\n" +
 	"\bcategory\x18\x02 \x01(\tR\bcategory\"N\n" +
 	"\x16SearchProductsResponse\x124\n" +
-	"\bproducts\x18\x01 \x03(\v2\x18.stockchecker.v1.ProductR\bproducts\"D\n" +
+	"\bproducts\x18\x01 \x03(\v2\x18.stockchecker.v1.ProductR\bproducts\"e\n" +
 	"\x11CheckStockRequest\x12\x1b\n" +
 	"\tstore_ids\x18\x01 \x03(\tR\bstoreIds\x12\x12\n" +
-	"\x04skus\x18\x02 \x03(\tR\x04skus\"L\n" +
+	"\x04skus\x18\x02 \x03(\tR\x04skus\x12\x1f\n" +
+	"\vpostal_code\x18\x03 \x01(\tR\n" +
+	"postalCode\"L\n" +
 	"\x12CheckStockResponse\x126\n" +
 	"\aresults\x18\x01 \x03(\v2\x1c.stockchecker.v1.StockStatusR\aresults\"\x17\n" +
 	"\x15GetCurrentUserRequest\"C\n" +

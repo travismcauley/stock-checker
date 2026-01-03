@@ -33,8 +33,8 @@ type Client interface {
 	// GetProductBySKU gets a single product by its SKU
 	GetProductBySKU(ctx context.Context, sku string) (*Product, error)
 
-	// CheckAvailability checks product availability at specific stores
-	CheckAvailability(ctx context.Context, sku string, storeIDs []string) ([]StoreAvailability, error)
+	// CheckAvailability checks product availability using postal code (250 mile radius)
+	CheckAvailability(ctx context.Context, sku string, postalCode string) ([]StoreAvailability, error)
 
 	// BrowsePokemonProducts returns Pokemon TCG products from the trading cards category
 	BrowsePokemonProducts(ctx context.Context) ([]Product, error)
@@ -429,39 +429,49 @@ type storesProductsResponse struct {
 	Total int `json:"total"`
 }
 
-// CheckAvailability checks product availability at specific stores
-func (c *APIClient) CheckAvailability(ctx context.Context, sku string, storeIDs []string) ([]StoreAvailability, error) {
-	log.Printf("CheckAvailability called with sku: %s, storeIDs: %v", sku, storeIDs)
+// availabilityByPostalResponse is the response for /products/{sku}/stores.json
+type availabilityByPostalResponse struct {
+	IspuEligible bool `json:"ispuEligible"`
+	Stores       []struct {
+		StoreID        string  `json:"storeID"`
+		Name           string  `json:"name"`
+		Address        string  `json:"address"`
+		City           string  `json:"city"`
+		State          string  `json:"state"`
+		PostalCode     string  `json:"postalCode"`
+		StoreType      string  `json:"storeType"`
+		MinPickupHours int     `json:"minPickupHours"`
+		LowStock       bool    `json:"lowStock"`
+		Distance       float64 `json:"distance"`
+	} `json:"stores"`
+}
 
-	// Build storeId list for the in() operator
-	storeIDsParam := ""
-	for i, id := range storeIDs {
-		if i > 0 {
-			storeIDsParam += ","
-		}
-		storeIDsParam += id
+// CheckAvailability checks product availability using postal code (250 mile radius)
+// Returns ALL stores with stock, sorted by distance
+func (c *APIClient) CheckAvailability(ctx context.Context, sku string, postalCode string) ([]StoreAvailability, error) {
+	log.Printf("CheckAvailability called with sku: %s, postalCode: %s", sku, postalCode)
+
+	if postalCode == "" {
+		return []StoreAvailability{}, nil
 	}
 
-	// Use the stores+products combined query format
-	// This returns stores that have the product in stock
-	endpoint := fmt.Sprintf("%s/stores(storeId%%20in(%s))+products(sku=%s)?format=json&show=storeId,name,city,region,distance,products.sku,products.name,products.inStorePickup,products.friendsAndFamilyPickup&apiKey=%s",
-		c.baseURL, storeIDsParam, url.PathEscape(sku), c.apiKey)
+	// Search for product availability using postal code
+	endpoint := fmt.Sprintf("%s/products/%s/stores.json?postalCode=%s&apiKey=%s",
+		c.baseURL, url.PathEscape(sku), url.QueryEscape(postalCode), c.apiKey)
 
 	log.Printf("CheckAvailability endpoint: %s", endpoint)
 
 	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
-		// Check if it's a 403 Forbidden error (Best Buy blocks availability for some products)
 		if strings.Contains(err.Error(), "403") {
-			log.Printf("CheckAvailability: Access forbidden for SKU %s (likely restricted product)", sku)
-			// Return empty availability with a note that it's restricted
+			log.Printf("CheckAvailability: Access forbidden for SKU %s (likely rate limited or restricted)", sku)
 			return []StoreAvailability{}, nil
 		}
 		log.Printf("CheckAvailability error: %v", err)
 		return nil, err
 	}
 
-	var result storesProductsResponse
+	var result availabilityByPostalResponse
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Printf("Failed to decode availability response: %v, body: %s", err, string(body))
 		return nil, fmt.Errorf("failed to decode response: %w", err)
@@ -469,19 +479,18 @@ func (c *APIClient) CheckAvailability(ctx context.Context, sku string, storeIDs 
 
 	log.Printf("CheckAvailability returned %d stores with product in stock", len(result.Stores))
 
-	// Convert to StoreAvailability
-	// Only stores that have the product show up in the response
+	// Return ALL stores with stock
 	availability := make([]StoreAvailability, 0, len(result.Stores))
 	for _, store := range result.Stores {
 		availability = append(availability, StoreAvailability{
-			StoreID:        fmt.Sprintf("%d", store.StoreID),
+			StoreID:        store.StoreID,
 			StoreName:      store.Name,
 			City:           store.City,
 			State:          store.State,
 			Distance:       store.Distance,
-			InStock:        true, // If store is in response, product is available
-			LowStock:       false,
-			PickupEligible: len(store.Products) > 0 && store.Products[0].InStorePickup,
+			InStock:        true,
+			LowStock:       store.LowStock,
+			PickupEligible: true, // If in response, pickup is eligible
 		})
 	}
 

@@ -264,8 +264,8 @@ func (c *MockClient) GetProductBySKU(ctx context.Context, sku string) (*Product,
 	return nil, fmt.Errorf("product not found: %s", sku)
 }
 
-// CheckAvailability checks product availability at specific stores
-func (c *MockClient) CheckAvailability(ctx context.Context, sku string, storeIDs []string) ([]StoreAvailability, error) {
+// CheckAvailability checks product availability using postal code
+func (c *MockClient) CheckAvailability(ctx context.Context, sku string, postalCode string) ([]StoreAvailability, error) {
 	if err := c.simulateLatency(ctx); err != nil {
 		return nil, err
 	}
@@ -283,22 +283,11 @@ func (c *MockClient) CheckAvailability(ctx context.Context, sku string, storeIDs
 		return nil, fmt.Errorf("product not found: %s", sku)
 	}
 
-	// Generate availability for each requested store
-	availability := make([]StoreAvailability, 0, len(storeIDs))
+	// Generate availability for all mock stores (simulating postal code search)
+	availability := make([]StoreAvailability, 0)
 
-	for _, storeID := range storeIDs {
-		// Find the store
-		var store *Store
-		for _, s := range mockStores {
-			if fmt.Sprintf("%d", s.StoreID) == storeID {
-				store = &s
-				break
-			}
-		}
-
-		if store == nil {
-			continue
-		}
+	for _, store := range mockStores {
+		storeID := fmt.Sprintf("%d", store.StoreID)
 
 		// Determine availability based on product and some randomness
 		// Use a seeded random based on store+product to get consistent results
@@ -321,16 +310,19 @@ func (c *MockClient) CheckAvailability(ctx context.Context, sku string, storeIDs
 			lowStock = roll >= 0.5 && roll < 0.7
 		}
 
-		availability = append(availability, StoreAvailability{
-			StoreID:        storeID,
-			StoreName:      store.Name,
-			City:           store.City,
-			State:          store.State,
-			Distance:       store.Distance,
-			InStock:        inStock,
-			LowStock:       lowStock,
-			PickupEligible: inStock,
-		})
+		// Only add stores that have stock (like the real API)
+		if inStock {
+			availability = append(availability, StoreAvailability{
+				StoreID:        storeID,
+				StoreName:      store.Name,
+				City:           store.City,
+				State:          store.State,
+				Distance:       store.Distance,
+				InStock:        inStock,
+				LowStock:       lowStock,
+				PickupEligible: inStock,
+			})
+		}
 	}
 
 	return availability, nil

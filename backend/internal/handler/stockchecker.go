@@ -101,18 +101,25 @@ func (h *StockCheckerHandler) SearchProducts(
 	}), nil
 }
 
-// CheckStock checks inventory for products at specified stores
+// CheckStock checks inventory for products using postal code search
 func (h *StockCheckerHandler) CheckStock(
 	ctx context.Context,
 	req *connect.Request[stockcheckerv1.CheckStockRequest],
 ) (*connect.Response[stockcheckerv1.CheckStockResponse], error) {
-	storeIDs := req.Msg.StoreIds
+	myStoreIDs := req.Msg.StoreIds // User's saved stores (for highlighting)
 	skus := req.Msg.Skus
+	postalCode := req.Msg.PostalCode
 
-	if len(storeIDs) == 0 || len(skus) == 0 {
+	if postalCode == "" || len(skus) == 0 {
 		return connect.NewResponse(&stockcheckerv1.CheckStockResponse{
 			Results: []*stockcheckerv1.StockStatus{},
 		}), nil
+	}
+
+	// Build a set of user's saved store IDs for quick lookup
+	myStoresSet := make(map[string]bool)
+	for _, id := range myStoreIDs {
+		myStoresSet[id] = true
 	}
 
 	// Check availability for each SKU
@@ -126,21 +133,24 @@ func (h *StockCheckerHandler) CheckStock(
 			continue
 		}
 
-		// Check availability at stores
-		availability, err := h.bbClient.CheckAvailability(ctx, sku, storeIDs)
+		// Check availability using postal code (returns ALL stores with stock)
+		availability, err := h.bbClient.CheckAvailability(ctx, sku, postalCode)
 		if err != nil {
 			log.Printf("Error checking availability for %s: %v", sku, err)
 			continue
 		}
 
-		// Convert to StockStatus
+		// Convert to StockStatus, flagging user's saved stores
 		for _, avail := range availability {
+			isMyStore := myStoresSet[avail.StoreID]
+
 			results = append(results, &stockcheckerv1.StockStatus{
 				Store: &stockcheckerv1.Store{
-					StoreId: avail.StoreID,
-					Name:    avail.StoreName,
-					City:    avail.City,
-					State:   avail.State,
+					StoreId:       avail.StoreID,
+					Name:          avail.StoreName,
+					City:          avail.City,
+					State:         avail.State,
+					DistanceMiles: avail.Distance,
 				},
 				Product: &stockcheckerv1.Product{
 					Sku:       fmt.Sprintf("%d", product.SKU),
@@ -150,6 +160,7 @@ func (h *StockCheckerHandler) CheckStock(
 				InStock:        avail.InStock,
 				LowStock:       avail.LowStock,
 				PickupEligible: avail.PickupEligible,
+				IsMyStore:      isMyStore,
 			})
 		}
 	}

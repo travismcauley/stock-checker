@@ -131,6 +131,13 @@ export declare type StockStatus = Message<"stockchecker.v1.StockStatus"> & {
    * @generated from field: bool pickup_eligible = 5;
    */
   pickupEligible: boolean;
+
+  /**
+   * True if store is in user's "My Stores" list
+   *
+   * @generated from field: bool is_my_store = 6;
+   */
+  isMyStore: boolean;
 };
 
 /**
@@ -267,6 +274,8 @@ export declare const SearchProductsResponseSchema: GenMessage<SearchProductsResp
  */
 export declare type CheckStockRequest = Message<"stockchecker.v1.CheckStockRequest"> & {
   /**
+   * User's saved store IDs (for highlighting)
+   *
    * @generated from field: repeated string store_ids = 1;
    */
   storeIds: string[];
@@ -275,6 +284,13 @@ export declare type CheckStockRequest = Message<"stockchecker.v1.CheckStockReque
    * @generated from field: repeated string skus = 2;
    */
   skus: string[];
+
+  /**
+   * Postal code to search from (250 mile radius)
+   *
+   * @generated from field: string postal_code = 3;
+   */
+  postalCode: string;
 };
 
 /**
