@@ -54,6 +54,7 @@ message SearchStoresResponse {
 // SearchProductsRequest is the request for searching products
 message SearchProductsRequest {
   string query = 1; // search term or SKU
+  string category = 2; // optional category filter (e.g., "POKEMON CARDS")
 }
 
 // SearchProductsResponse is the response containing matching products

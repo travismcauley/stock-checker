@@ -227,6 +227,13 @@ export declare type SearchProductsRequest = Message<"stockchecker.v1.SearchProdu
    * @generated from field: string query = 1;
    */
   query: string;
+
+  /**
+   * optional category filter (e.g., "POKEMON CARDS")
+   *
+   * @generated from field: string category = 2;
+   */
+  category: string;
 };
 
 /**

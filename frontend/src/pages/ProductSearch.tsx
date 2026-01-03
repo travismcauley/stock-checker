@@ -5,18 +5,26 @@ import { useToast } from '../components/Toast'
 import { ProductCardSkeleton } from '../components/Skeleton'
 import type { Product } from '../gen/stockchecker/v1/service_pb.js'
 
+// Category options for the dropdown
+const CATEGORIES = [
+  { value: '', label: 'All Products' },
+  { value: 'POKEMON CARDS', label: 'Pokemon TCG' },
+  { value: 'OTHER SPORTS CARDS', label: 'Sports Cards' },
+]
+
 export function ProductSearch() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('POKEMON CARDS') // Default to Pokemon
   const [hasSearched, setHasSearched] = useState(false)
 
   const { addProduct, isProductInList } = useMyProducts()
   const { showToast } = useToast()
 
   const handleSearch = async () => {
-    if (!query) return
+    if (!query && !category) return
 
     setLoading(true)
     setError(null)
@@ -25,6 +33,7 @@ export function ProductSearch() {
     try {
       const response = await stockCheckerClient.searchProducts({
         query: query,
+        category: category,
       })
       setProducts(response.products)
       if (response.products.length === 0) {
@@ -85,11 +94,29 @@ export function ProductSearch() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">Search Pokemon Products</h2>
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Search Products</h2>
+
+        {/* Category Filter */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 text-base bg-white"
+          >
+            {CATEGORIES.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Search Input */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <input
             type="text"
-            placeholder="Search by name or SKU"
+            placeholder={category ? "Search within category (optional)" : "Search by name or SKU"}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -97,7 +124,7 @@ export function ProductSearch() {
           />
           <button
             onClick={handleSearch}
-            disabled={loading || !query}
+            disabled={loading || (!query && !category)}
             className="px-6 py-2 bg-yellow-500 text-gray-900 font-medium rounded-lg hover:bg-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
           >
             {loading ? (

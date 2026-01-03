@@ -23,8 +23,8 @@ type Client interface {
 	// SearchStores searches for stores near a postal code within a radius
 	SearchStores(ctx context.Context, postalCode string, radiusMiles int) ([]Store, error)
 
-	// SearchProducts searches for products by keyword
-	SearchProducts(ctx context.Context, query string) ([]Product, error)
+	// SearchProducts searches for products by keyword, optionally filtered by subclass
+	SearchProducts(ctx context.Context, query string, subclass string) ([]Product, error)
 
 	// SearchProductsInCategory searches for products within a category
 	SearchProductsInCategory(ctx context.Context, categoryID string, query string) ([]Product, error)
@@ -276,9 +276,9 @@ func (c *APIClient) SearchStores(ctx context.Context, postalCode string, radiusM
 // skuPattern matches strings that look like SKUs (6-8 digits)
 var skuPattern = regexp.MustCompile(`^\d{6,8}$`)
 
-// SearchProducts searches for products by keyword or SKU
-func (c *APIClient) SearchProducts(ctx context.Context, query string) ([]Product, error) {
-	log.Printf("SearchProducts called with query: %s", query)
+// SearchProducts searches for products by keyword or SKU, optionally filtered by subclass
+func (c *APIClient) SearchProducts(ctx context.Context, query string, subclass string) ([]Product, error) {
+	log.Printf("SearchProducts called with query: %s, subclass: %s", query, subclass)
 
 	// Check if the query looks like a SKU (6-8 digit number)
 	if skuPattern.MatchString(query) {
@@ -291,10 +291,26 @@ func (c *APIClient) SearchProducts(ctx context.Context, query string) ([]Product
 		log.Printf("SKU lookup failed or returned empty, falling back to search: %v", err)
 	}
 
-	// Use PathEscape instead of QueryEscape because Best Buy API needs %20 for spaces, not +
-	// Include active=* to also return inactive products (Best Buy hides many Pokemon TCG products)
-	endpoint := fmt.Sprintf("%s/products(search=%s&active=*)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=50&apiKey=%s",
-		c.baseURL, url.PathEscape(query), c.apiKey)
+	// Build the filter query
+	var filterParts []string
+	if query != "" {
+		filterParts = append(filterParts, fmt.Sprintf("search=%s", url.PathEscape(query)))
+	}
+	if subclass != "" {
+		filterParts = append(filterParts, fmt.Sprintf("subclass=%s", url.PathEscape(subclass)))
+	}
+	filterParts = append(filterParts, "active=*") // Include inactive products
+
+	filter := ""
+	for i, part := range filterParts {
+		if i > 0 {
+			filter += "&"
+		}
+		filter += part
+	}
+
+	endpoint := fmt.Sprintf("%s/products(%s)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=50&apiKey=%s",
+		c.baseURL, filter, c.apiKey)
 
 	log.Printf("Searching products with endpoint: %s", endpoint)
 
@@ -390,8 +406,29 @@ func (c *APIClient) BrowsePokemonProducts(ctx context.Context) ([]Product, error
 	return result.Products, nil
 }
 
+// storesProductsResponse is the API response for combined stores+products query
+type storesProductsResponse struct {
+	Stores []struct {
+		StoreID  int     `json:"storeId"`
+		Name     string  `json:"name"`
+		City     string  `json:"city"`
+		State    string  `json:"region"`
+		Distance float64 `json:"distance"`
+		Products []struct {
+			SKU              int    `json:"sku"`
+			Name             string `json:"name"`
+			InStorePickup    bool   `json:"inStorePickup"`
+			FriendsFamilyPickup bool `json:"friendsAndFamilyPickup"`
+		} `json:"products"`
+	} `json:"stores"`
+	Total int `json:"total"`
+}
+
 // CheckAvailability checks product availability at specific stores
 func (c *APIClient) CheckAvailability(ctx context.Context, sku string, storeIDs []string) ([]StoreAvailability, error) {
+	log.Printf("CheckAvailability called with sku: %s, storeIDs: %v", sku, storeIDs)
+
+	// Build storeId list for the in() operator
 	storeIDsParam := ""
 	for i, id := range storeIDs {
 		if i > 0 {
@@ -400,31 +437,40 @@ func (c *APIClient) CheckAvailability(ctx context.Context, sku string, storeIDs 
 		storeIDsParam += id
 	}
 
-	endpoint := fmt.Sprintf("%s/products/%s/stores.json?storeId=%s&apiKey=%s",
-		c.baseURL, url.PathEscape(sku), url.QueryEscape(storeIDsParam), c.apiKey)
+	// Use the stores+products combined query format
+	// This returns stores that have the product in stock
+	endpoint := fmt.Sprintf("%s/stores(storeId%%20in(%s))+products(sku=%s)?format=json&show=storeId,name,city,region,distance,products.sku,products.name,products.inStorePickup,products.friendsAndFamilyPickup&apiKey=%s",
+		c.baseURL, storeIDsParam, url.PathEscape(sku), c.apiKey)
+
+	log.Printf("CheckAvailability endpoint: %s", endpoint)
 
 	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
+		log.Printf("CheckAvailability error: %v", err)
 		return nil, err
 	}
 
-	var result availabilityResponse
+	var result storesProductsResponse
 	if err := json.Unmarshal(body, &result); err != nil {
+		log.Printf("Failed to decode availability response: %v, body: %s", err, string(body))
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
+	log.Printf("CheckAvailability returned %d stores with product in stock", len(result.Stores))
+
 	// Convert to StoreAvailability
+	// Only stores that have the product show up in the response
 	availability := make([]StoreAvailability, 0, len(result.Stores))
 	for _, store := range result.Stores {
 		availability = append(availability, StoreAvailability{
-			StoreID:        store.StoreID,
-			StoreName:      store.StoreName,
+			StoreID:        fmt.Sprintf("%d", store.StoreID),
+			StoreName:      store.Name,
 			City:           store.City,
 			State:          store.State,
 			Distance:       store.Distance,
 			InStock:        true, // If store is in response, product is available
-			LowStock:       store.LowStock,
-			PickupEligible: true, // Assume pickup eligible if in-store available
+			LowStock:       false,
+			PickupEligible: len(store.Products) > 0 && store.Products[0].InStorePickup,
 		})
 	}
 

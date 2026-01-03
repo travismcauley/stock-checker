@@ -78,7 +78,7 @@ func (h *StockCheckerHandler) SearchProducts(
 	ctx context.Context,
 	req *connect.Request[stockcheckerv1.SearchProductsRequest],
 ) (*connect.Response[stockcheckerv1.SearchProductsResponse], error) {
-	products, err := h.bbClient.SearchProducts(ctx, req.Msg.Query)
+	products, err := h.bbClient.SearchProducts(ctx, req.Msg.Query, req.Msg.Category)
 	if err != nil {
 		log.Printf("Error searching products: %v", err)
 		return nil, connect.NewError(connect.CodeInternal, err)

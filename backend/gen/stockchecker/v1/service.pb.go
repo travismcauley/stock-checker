@@ -446,7 +446,8 @@ func (x *SearchStoresResponse) GetStores() []*Store {
 // SearchProductsRequest is the request for searching products
 type SearchProductsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"` // search term or SKU
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`       // search term or SKU
+	Category      string                 `protobuf:"bytes,2,opt,name=category,proto3" json:"category,omitempty"` // optional category filter (e.g., "POKEMON CARDS")
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -484,6 +485,13 @@ func (*SearchProductsRequest) Descriptor() ([]byte, []int) {
 func (x *SearchProductsRequest) GetQuery() string {
 	if x != nil {
 		return x.Query
+	}
+	return ""
+}
+
+func (x *SearchProductsRequest) GetCategory() string {
+	if x != nil {
+		return x.Category
 	}
 	return ""
 }
@@ -1327,9 +1335,10 @@ const file_stockchecker_v1_service_proto_rawDesc = "" +
 	"postalCode\x12!\n" +
 	"\fradius_miles\x18\x02 \x01(\x05R\vradiusMiles\"F\n" +
 	"\x14SearchStoresResponse\x12.\n" +
-	"\x06stores\x18\x01 \x03(\v2\x16.stockchecker.v1.StoreR\x06stores\"-\n" +
+	"\x06stores\x18\x01 \x03(\v2\x16.stockchecker.v1.StoreR\x06stores\"I\n" +
 	"\x15SearchProductsRequest\x12\x14\n" +
-	"\x05query\x18\x01 \x01(\tR\x05query\"N\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\x12\x1a\n" +
+	"\bcategory\x18\x02 \x01(\tR\bcategory\"N\n" +
 	"\x16SearchProductsResponse\x124\n" +
 	"\bproducts\x18\x01 \x03(\v2\x18.stockchecker.v1.ProductR\bproducts\"D\n" +
 	"\x11CheckStockRequest\x12\x1b\n" +

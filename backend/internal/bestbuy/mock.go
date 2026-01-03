@@ -224,26 +224,26 @@ func (c *MockClient) SearchStores(ctx context.Context, postalCode string, radius
 	return stores, nil
 }
 
-// SearchProducts searches for products by keyword
-func (c *MockClient) SearchProducts(ctx context.Context, query string) ([]Product, error) {
+// SearchProducts searches for products by keyword, optionally filtered by subclass
+func (c *MockClient) SearchProducts(ctx context.Context, query string, subclass string) ([]Product, error) {
 	if err := c.simulateLatency(ctx); err != nil {
 		return nil, err
 	}
 
 	// Filter products that match the query (case-insensitive)
-	query = strings.ToLower(query)
+	queryLower := strings.ToLower(query)
 	var results []Product
 
 	for _, product := range mockProducts {
-		if strings.Contains(strings.ToLower(product.Name), query) ||
-			strings.Contains(fmt.Sprintf("%d", product.SKU), query) ||
-			strings.Contains(strings.ToLower(product.ShortDescription), query) {
+		if query == "" || strings.Contains(strings.ToLower(product.Name), queryLower) ||
+			strings.Contains(fmt.Sprintf("%d", product.SKU), queryLower) ||
+			strings.Contains(strings.ToLower(product.ShortDescription), queryLower) {
 			results = append(results, product)
 		}
 	}
 
 	// If no matches found and query looks like it could be Pokemon related, return all
-	if len(results) == 0 && (strings.Contains(query, "pokemon") || strings.Contains(query, "card")) {
+	if len(results) == 0 && (strings.Contains(queryLower, "pokemon") || strings.Contains(queryLower, "card")) {
 		return mockProducts, nil
 	}
 
@@ -339,7 +339,7 @@ func (c *MockClient) CheckAvailability(ctx context.Context, sku string, storeIDs
 // SearchProductsInCategory searches for products within a specific category
 func (c *MockClient) SearchProductsInCategory(ctx context.Context, categoryID string, query string) ([]Product, error) {
 	// For mock, just delegate to regular search
-	return c.SearchProducts(ctx, query)
+	return c.SearchProducts(ctx, query, "")
 }
 
 // BrowsePokemonProducts returns Pokemon TCG products
