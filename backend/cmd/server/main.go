@@ -90,6 +90,16 @@ func main() {
 	// Create a new mux and register the handler
 	mux := http.NewServeMux()
 
+	// Health check endpoint for Railway/load balancers
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"status":"ok"}`))
+	})
+
 	// Auth endpoints (if auth is configured)
 	if authHandler != nil {
 		mux.HandleFunc("/auth/login", authHandler.HandleLogin)
