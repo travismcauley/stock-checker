@@ -75,6 +75,11 @@ func (a *Auth) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Store state in cookie
+	// Use SameSiteNoneMode for cross-origin requests (frontend on different domain)
+	sameSite := http.SameSiteLaxMode
+	if a.secureCookie {
+		sameSite = http.SameSiteNoneMode
+	}
 	http.SetCookie(w, &http.Cookie{
 		Name:     "oauth_state",
 		Value:    state,
@@ -82,7 +87,7 @@ func (a *Auth) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		MaxAge:   300, // 5 minutes
 		HttpOnly: true,
 		Secure:   a.secureCookie,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: sameSite,
 	})
 
 	// Redirect to Google
@@ -157,6 +162,11 @@ func (a *Auth) HandleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Set session cookie
+	// Use SameSiteNoneMode for cross-origin requests (frontend on different domain)
+	sameSite := http.SameSiteLaxMode
+	if a.secureCookie {
+		sameSite = http.SameSiteNoneMode
+	}
 	http.SetCookie(w, &http.Cookie{
 		Name:     SessionCookieName,
 		Value:    sessionToken,
@@ -164,7 +174,7 @@ func (a *Auth) HandleCallback(w http.ResponseWriter, r *http.Request) {
 		Expires:  expiresAt,
 		HttpOnly: true,
 		Secure:   a.secureCookie,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: sameSite,
 	})
 
 	// Redirect to frontend
@@ -181,6 +191,11 @@ func (a *Auth) HandleLogout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Clear session cookie
+	// Use SameSiteNoneMode for cross-origin requests (frontend on different domain)
+	sameSite := http.SameSiteLaxMode
+	if a.secureCookie {
+		sameSite = http.SameSiteNoneMode
+	}
 	http.SetCookie(w, &http.Cookie{
 		Name:     SessionCookieName,
 		Value:    "",
@@ -188,7 +203,7 @@ func (a *Auth) HandleLogout(w http.ResponseWriter, r *http.Request) {
 		MaxAge:   -1,
 		HttpOnly: true,
 		Secure:   a.secureCookie,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: sameSite,
 	})
 
 	// Redirect to frontend
