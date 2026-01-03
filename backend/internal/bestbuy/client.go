@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"sync"
 	"time"
 )
 
@@ -26,26 +28,31 @@ type Client interface {
 
 // Store represents a Best Buy store from the API
 type Store struct {
-	StoreID       string  `json:"storeId"`
-	Name          string  `json:"name"`
-	Address       string  `json:"address"`
-	Address2      string  `json:"address2"`
-	City          string  `json:"city"`
-	State         string  `json:"state"`
-	PostalCode    string  `json:"postalCode"`
-	Phone         string  `json:"phone"`
-	Distance      float64 `json:"distance"`
-	StoreType     string  `json:"storeType"`
-	Hours         string  `json:"hours"`
-	HoursAmPm     string  `json:"hoursAmPm"`
-	GMTOffset     int     `json:"gmtOffset"`
-	Lat           float64 `json:"lat"`
-	Lng           float64 `json:"lng"`
+	StoreID    int     `json:"storeId"`
+	Name       string  `json:"name"`
+	Address    string  `json:"address"`
+	Address2   string  `json:"address2"`
+	City       string  `json:"city"`
+	State      string  `json:"region"` // Best Buy uses "region" for state
+	PostalCode string  `json:"postalCode"`
+	Phone      string  `json:"phone"`
+	Distance   float64 `json:"distance"`
+	StoreType  string  `json:"storeType"`
+	Hours      string  `json:"hours"`
+	HoursAmPm  string  `json:"hoursAmPm"`
+	GMTOffset  int     `json:"gmtOffset"`
+	Lat        float64 `json:"lat"`
+	Lng        float64 `json:"lng"`
+}
+
+// StoreIDString returns the store ID as a string
+func (s Store) StoreIDString() string {
+	return fmt.Sprintf("%d", s.StoreID)
 }
 
 // Product represents a Best Buy product from the API
 type Product struct {
-	SKU                 string  `json:"sku"`
+	SKU                 int     `json:"sku"`
 	Name                string  `json:"name"`
 	SalePrice           float64 `json:"salePrice"`
 	RegularPrice        float64 `json:"regularPrice"`
@@ -61,6 +68,11 @@ type Product struct {
 	OnlineAvailability  bool    `json:"onlineAvailability"`
 }
 
+// SKUString returns the SKU as a string
+func (p Product) SKUString() string {
+	return fmt.Sprintf("%d", p.SKU)
+}
+
 // StoreAvailability represents product availability at a store
 type StoreAvailability struct {
 	StoreID        string  `json:"storeId"`
@@ -73,11 +85,27 @@ type StoreAvailability struct {
 	PickupEligible bool    `json:"pickupEligible"`
 }
 
+// RateLimitError is returned when the API rate limit is exceeded
+type RateLimitError struct {
+	RetryAfter time.Duration
+}
+
+func (e *RateLimitError) Error() string {
+	return fmt.Sprintf("rate limit exceeded, retry after %v", e.RetryAfter)
+}
+
 // APIClient is the real Best Buy API client implementation
 type APIClient struct {
 	apiKey     string
 	baseURL    string
 	httpClient *http.Client
+
+	// Rate limiting
+	mu            sync.Mutex
+	lastRequest   time.Time
+	minInterval   time.Duration // Minimum time between requests
+	maxRetries    int
+	retryBaseWait time.Duration
 }
 
 // NewAPIClient creates a new Best Buy API client
@@ -88,7 +116,95 @@ func NewAPIClient(apiKey string) *APIClient {
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},
+		minInterval:   200 * time.Millisecond, // Max 5 requests per second
+		maxRetries:    3,
+		retryBaseWait: 1 * time.Second,
 	}
+}
+
+// doRequest performs an HTTP request with rate limiting and retry logic
+func (c *APIClient) doRequest(ctx context.Context, endpoint string) ([]byte, error) {
+	var lastErr error
+
+	for attempt := 0; attempt <= c.maxRetries; attempt++ {
+		// Rate limiting - ensure minimum interval between requests
+		c.mu.Lock()
+		elapsed := time.Since(c.lastRequest)
+		if elapsed < c.minInterval {
+			sleepTime := c.minInterval - elapsed
+			c.mu.Unlock()
+			select {
+			case <-time.After(sleepTime):
+			case <-ctx.Done():
+				return nil, ctx.Err()
+			}
+			c.mu.Lock()
+		}
+		c.lastRequest = time.Now()
+		c.mu.Unlock()
+
+		// Create and execute request
+		req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create request: %w", err)
+		}
+
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			lastErr = fmt.Errorf("failed to execute request: %w", err)
+			continue
+		}
+
+		body, err := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		if err != nil {
+			lastErr = fmt.Errorf("failed to read response: %w", err)
+			continue
+		}
+
+		// Handle rate limiting (429 Too Many Requests)
+		if resp.StatusCode == http.StatusTooManyRequests {
+			retryAfter := c.retryBaseWait * time.Duration(1<<attempt) // Exponential backoff
+
+			// Check for Retry-After header
+			if ra := resp.Header.Get("Retry-After"); ra != "" {
+				if seconds, err := time.ParseDuration(ra + "s"); err == nil {
+					retryAfter = seconds
+				}
+			}
+
+			lastErr = &RateLimitError{RetryAfter: retryAfter}
+
+			select {
+			case <-time.After(retryAfter):
+				continue
+			case <-ctx.Done():
+				return nil, ctx.Err()
+			}
+		}
+
+		// Handle other errors
+		if resp.StatusCode != http.StatusOK {
+			lastErr = fmt.Errorf("API returned status %d: %s", resp.StatusCode, string(body))
+
+			// Don't retry on client errors (except rate limiting)
+			if resp.StatusCode >= 400 && resp.StatusCode < 500 {
+				return nil, lastErr
+			}
+
+			// Retry on server errors with backoff
+			select {
+			case <-time.After(c.retryBaseWait * time.Duration(1<<attempt)):
+				continue
+			case <-ctx.Done():
+				return nil, ctx.Err()
+			}
+		}
+
+		return body, nil
+	}
+
+	return nil, fmt.Errorf("max retries exceeded: %w", lastErr)
 }
 
 // storesResponse is the API response for store searches
@@ -106,12 +222,12 @@ type productsResponse struct {
 // availabilityResponse is the API response for availability checks
 type availabilityResponse struct {
 	Stores []struct {
-		StoreID   string `json:"storeId"`
-		StoreName string `json:"name"`
-		City      string `json:"city"`
-		State     string `json:"state"`
+		StoreID   string  `json:"storeId"`
+		StoreName string  `json:"name"`
+		City      string  `json:"city"`
+		State     string  `json:"state"`
 		Distance  float64 `json:"distance"`
-		LowStock  bool   `json:"lowStock"`
+		LowStock  bool    `json:"lowStock"`
 	} `json:"stores"`
 }
 
@@ -121,27 +237,16 @@ func (c *APIClient) SearchStores(ctx context.Context, postalCode string, radiusM
 		radiusMiles = 25
 	}
 
-	// Build the URL: /stores(area(postalCode,radius))?format=json&apiKey=XXX
-	endpoint := fmt.Sprintf("%s/stores(area(%s,%d))?format=json&show=storeId,name,address,address2,city,state,postalCode,phone,distance,storeType,hours,hoursAmPm,gmtOffset,lat,lng&pageSize=50&apiKey=%s",
+	endpoint := fmt.Sprintf("%s/stores(area(%s,%d))?format=json&show=storeId,name,address,address2,city,region,postalCode,phone,distance,storeType,hours,hoursAmPm,gmtOffset,lat,lng&pageSize=50&apiKey=%s",
 		c.baseURL, url.QueryEscape(postalCode), radiusMiles, c.apiKey)
 
-	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
+	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("failed to execute request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
+		return nil, err
 	}
 
 	var result storesResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
@@ -150,27 +255,16 @@ func (c *APIClient) SearchStores(ctx context.Context, postalCode string, radiusM
 
 // SearchProducts searches for products by keyword
 func (c *APIClient) SearchProducts(ctx context.Context, query string) ([]Product, error) {
-	// Build the URL: /products(search=query)?format=json&apiKey=XXX
 	endpoint := fmt.Sprintf("%s/products(search=%s)?format=json&show=sku,name,salePrice,regularPrice,thumbnailImage,image,url,shortDescription,manufacturer,modelNumber,upc,inStoreAvailability,onlineAvailability&pageSize=50&apiKey=%s",
 		c.baseURL, url.QueryEscape(query), c.apiKey)
 
-	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
+	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("failed to execute request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
+		return nil, err
 	}
 
 	var result productsResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
@@ -179,31 +273,16 @@ func (c *APIClient) SearchProducts(ctx context.Context, query string) ([]Product
 
 // GetProductBySKU gets a single product by SKU
 func (c *APIClient) GetProductBySKU(ctx context.Context, sku string) (*Product, error) {
-	// Build the URL: /products/{sku}.json?apiKey=XXX
 	endpoint := fmt.Sprintf("%s/products/%s.json?apiKey=%s",
 		c.baseURL, url.PathEscape(sku), c.apiKey)
 
-	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
+	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("failed to execute request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusNotFound {
-		return nil, fmt.Errorf("product not found: %s", sku)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
+		return nil, err
 	}
 
 	var product Product
-	if err := json.NewDecoder(resp.Body).Decode(&product); err != nil {
+	if err := json.Unmarshal(body, &product); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
@@ -212,9 +291,6 @@ func (c *APIClient) GetProductBySKU(ctx context.Context, sku string) (*Product, 
 
 // CheckAvailability checks product availability at specific stores
 func (c *APIClient) CheckAvailability(ctx context.Context, sku string, storeIDs []string) ([]StoreAvailability, error) {
-	// For each store, we need to check availability
-	// The API endpoint is: /products/{sku}/stores.json?storeId=1,2,3&apiKey=XXX
-
 	storeIDsParam := ""
 	for i, id := range storeIDs {
 		if i > 0 {
@@ -226,23 +302,13 @@ func (c *APIClient) CheckAvailability(ctx context.Context, sku string, storeIDs 
 	endpoint := fmt.Sprintf("%s/products/%s/stores.json?storeId=%s&apiKey=%s",
 		c.baseURL, url.PathEscape(sku), url.QueryEscape(storeIDsParam), c.apiKey)
 
-	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
+	body, err := c.doRequest(ctx, endpoint)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("failed to execute request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
+		return nil, err
 	}
 
 	var result availabilityResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 

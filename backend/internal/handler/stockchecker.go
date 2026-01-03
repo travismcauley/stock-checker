@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"connectrpc.com/connect"
@@ -43,7 +44,7 @@ func (h *StockCheckerHandler) SearchStores(
 	pbStores := make([]*stockcheckerv1.Store, 0, len(stores))
 	for _, store := range stores {
 		pbStores = append(pbStores, &stockcheckerv1.Store{
-			StoreId:       store.StoreID,
+			StoreId:       fmt.Sprintf("%d", store.StoreID),
 			Name:          store.Name,
 			Address:       store.Address,
 			City:          store.City,
@@ -74,7 +75,7 @@ func (h *StockCheckerHandler) SearchProducts(
 	pbProducts := make([]*stockcheckerv1.Product, 0, len(products))
 	for _, product := range products {
 		pbProducts = append(pbProducts, &stockcheckerv1.Product{
-			Sku:          product.SKU,
+			Sku:          fmt.Sprintf("%d", product.SKU),
 			Name:         product.Name,
 			SalePrice:    product.SalePrice,
 			ThumbnailUrl: product.ThumbnailImage,
@@ -129,7 +130,7 @@ func (h *StockCheckerHandler) CheckStock(
 					State:   avail.State,
 				},
 				Product: &stockcheckerv1.Product{
-					Sku:       product.SKU,
+					Sku:       fmt.Sprintf("%d", product.SKU),
 					Name:      product.Name,
 					SalePrice: product.SalePrice,
 				},

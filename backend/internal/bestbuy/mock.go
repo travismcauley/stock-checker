@@ -5,20 +5,26 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"time"
 )
 
 // MockClient is a mock implementation of the Best Buy API client for testing
-type MockClient struct{}
+type MockClient struct {
+	// Simulate network latency
+	latency time.Duration
+}
 
 // NewMockClient creates a new mock client
 func NewMockClient() *MockClient {
-	return &MockClient{}
+	return &MockClient{
+		latency: 100 * time.Millisecond, // Simulate 100ms API latency
+	}
 }
 
 // mockStores contains realistic mock store data
 var mockStores = []Store{
 	{
-		StoreID:    "1118",
+		StoreID:    1118,
 		Name:       "Best Buy - San Francisco",
 		Address:    "1717 Harrison St",
 		City:       "San Francisco",
@@ -30,7 +36,7 @@ var mockStores = []Store{
 		Lng:        -122.4134,
 	},
 	{
-		StoreID:    "1009",
+		StoreID:    1009,
 		Name:       "Best Buy - Daly City",
 		Address:    "133 Serramonte Center",
 		City:       "Daly City",
@@ -42,7 +48,7 @@ var mockStores = []Store{
 		Lng:        -122.4687,
 	},
 	{
-		StoreID:    "187",
+		StoreID:    187,
 		Name:       "Best Buy - Emeryville",
 		Address:    "3700 Mandela Pkwy",
 		City:       "Emeryville",
@@ -54,7 +60,7 @@ var mockStores = []Store{
 		Lng:        -122.2914,
 	},
 	{
-		StoreID:    "1444",
+		StoreID:    1444,
 		Name:       "Best Buy - San Bruno",
 		Address:    "899 El Camino Real",
 		City:       "San Bruno",
@@ -66,7 +72,7 @@ var mockStores = []Store{
 		Lng:        -122.4117,
 	},
 	{
-		StoreID:    "573",
+		StoreID:    573,
 		Name:       "Best Buy - Colma",
 		Address:    "4821 Colma Blvd",
 		City:       "Colma",
@@ -78,7 +84,7 @@ var mockStores = []Store{
 		Lng:        -122.4583,
 	},
 	{
-		StoreID:    "499",
+		StoreID:    499,
 		Name:       "Best Buy - Oakland",
 		Address:    "2110 Broadway",
 		City:       "Oakland",
@@ -94,7 +100,7 @@ var mockStores = []Store{
 // mockProducts contains realistic Pokemon card products
 var mockProducts = []Product{
 	{
-		SKU:                 "6579543",
+		SKU:                 6579543,
 		Name:                "Pokemon Trading Card Game: Scarlet & Violet Prismatic Evolutions Elite Trainer Box",
 		SalePrice:           59.99,
 		RegularPrice:        59.99,
@@ -106,7 +112,7 @@ var mockProducts = []Product{
 		OnlineAvailability:  false,
 	},
 	{
-		SKU:                 "6579544",
+		SKU:                 6579544,
 		Name:                "Pokemon Trading Card Game: Scarlet & Violet Prismatic Evolutions Booster Bundle",
 		SalePrice:           29.99,
 		RegularPrice:        29.99,
@@ -118,7 +124,7 @@ var mockProducts = []Product{
 		OnlineAvailability:  false,
 	},
 	{
-		SKU:                 "6579545",
+		SKU:                 6579545,
 		Name:                "Pokemon Trading Card Game: Scarlet & Violet Prismatic Evolutions Booster Pack",
 		SalePrice:           4.99,
 		RegularPrice:        4.99,
@@ -130,7 +136,7 @@ var mockProducts = []Product{
 		OnlineAvailability:  true,
 	},
 	{
-		SKU:                 "6543210",
+		SKU:                 6543210,
 		Name:                "Pokemon Trading Card Game: Scarlet & Violet 151 Ultra Premium Collection",
 		SalePrice:           139.99,
 		RegularPrice:        139.99,
@@ -142,7 +148,7 @@ var mockProducts = []Product{
 		OnlineAvailability:  false,
 	},
 	{
-		SKU:                 "6543211",
+		SKU:                 6543211,
 		Name:                "Pokemon Trading Card Game: Scarlet & Violet 151 Elite Trainer Box",
 		SalePrice:           49.99,
 		RegularPrice:        49.99,
@@ -154,7 +160,7 @@ var mockProducts = []Product{
 		OnlineAvailability:  false,
 	},
 	{
-		SKU:                 "6578901",
+		SKU:                 6578901,
 		Name:                "Pokemon Trading Card Game: Surging Sparks Elite Trainer Box",
 		SalePrice:           54.99,
 		RegularPrice:        54.99,
@@ -166,7 +172,7 @@ var mockProducts = []Product{
 		OnlineAvailability:  true,
 	},
 	{
-		SKU:                 "6578902",
+		SKU:                 6578902,
 		Name:                "Pokemon Trading Card Game: Surging Sparks Booster Bundle",
 		SalePrice:           24.99,
 		RegularPrice:        24.99,
@@ -178,7 +184,7 @@ var mockProducts = []Product{
 		OnlineAvailability:  true,
 	},
 	{
-		SKU:                 "6512345",
+		SKU:                 6512345,
 		Name:                "Pokemon Trading Card Game: Paldean Fates Elite Trainer Box",
 		SalePrice:           59.99,
 		RegularPrice:        59.99,
@@ -191,10 +197,21 @@ var mockProducts = []Product{
 	},
 }
 
+// simulateLatency adds a small delay to simulate network latency
+func (c *MockClient) simulateLatency(ctx context.Context) error {
+	select {
+	case <-time.After(c.latency):
+		return nil
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}
+
 // SearchStores returns mock stores based on postal code
 func (c *MockClient) SearchStores(ctx context.Context, postalCode string, radiusMiles int) ([]Store, error) {
-	// Simulate some latency
-	// time.Sleep(100 * time.Millisecond)
+	if err := c.simulateLatency(ctx); err != nil {
+		return nil, err
+	}
 
 	// Return stores with calculated mock distances
 	stores := make([]Store, len(mockStores))
@@ -209,13 +226,17 @@ func (c *MockClient) SearchStores(ctx context.Context, postalCode string, radius
 
 // SearchProducts searches for products by keyword
 func (c *MockClient) SearchProducts(ctx context.Context, query string) ([]Product, error) {
+	if err := c.simulateLatency(ctx); err != nil {
+		return nil, err
+	}
+
 	// Filter products that match the query (case-insensitive)
 	query = strings.ToLower(query)
 	var results []Product
 
 	for _, product := range mockProducts {
 		if strings.Contains(strings.ToLower(product.Name), query) ||
-			strings.Contains(strings.ToLower(product.SKU), query) ||
+			strings.Contains(fmt.Sprintf("%d", product.SKU), query) ||
 			strings.Contains(strings.ToLower(product.ShortDescription), query) {
 			results = append(results, product)
 		}
@@ -231,8 +252,12 @@ func (c *MockClient) SearchProducts(ctx context.Context, query string) ([]Produc
 
 // GetProductBySKU gets a single product by SKU
 func (c *MockClient) GetProductBySKU(ctx context.Context, sku string) (*Product, error) {
+	if err := c.simulateLatency(ctx); err != nil {
+		return nil, err
+	}
+
 	for _, product := range mockProducts {
-		if product.SKU == sku {
+		if fmt.Sprintf("%d", product.SKU) == sku {
 			return &product, nil
 		}
 	}
@@ -241,10 +266,14 @@ func (c *MockClient) GetProductBySKU(ctx context.Context, sku string) (*Product,
 
 // CheckAvailability checks product availability at specific stores
 func (c *MockClient) CheckAvailability(ctx context.Context, sku string, storeIDs []string) ([]StoreAvailability, error) {
+	if err := c.simulateLatency(ctx); err != nil {
+		return nil, err
+	}
+
 	// Find the product first
 	var product *Product
 	for _, p := range mockProducts {
-		if p.SKU == sku {
+		if fmt.Sprintf("%d", p.SKU) == sku {
 			product = &p
 			break
 		}
@@ -254,14 +283,14 @@ func (c *MockClient) CheckAvailability(ctx context.Context, sku string, storeIDs
 		return nil, fmt.Errorf("product not found: %s", sku)
 	}
 
-	// Generate availability for each store
+	// Generate availability for each requested store
 	availability := make([]StoreAvailability, 0, len(storeIDs))
 
 	for _, storeID := range storeIDs {
 		// Find the store
 		var store *Store
 		for _, s := range mockStores {
-			if s.StoreID == storeID {
+			if fmt.Sprintf("%d", s.StoreID) == storeID {
 				store = &s
 				break
 			}
@@ -271,26 +300,36 @@ func (c *MockClient) CheckAvailability(ctx context.Context, sku string, storeIDs
 			continue
 		}
 
-		// Randomly determine availability (60% in stock, 20% low stock, 20% out of stock)
-		r := rand.Float64()
-		inStock := r < 0.6
-		lowStock := r >= 0.6 && r < 0.8
+		// Determine availability based on product and some randomness
+		// Use a seeded random based on store+product to get consistent results
+		seed := int64(0)
+		for _, c := range storeID + sku {
+			seed += int64(c)
+		}
+		r := rand.New(rand.NewSource(seed))
+		roll := r.Float64()
 
-		// If product is marked as not in-store available, make it less likely to be in stock
+		var inStock, lowStock bool
+
 		if !product.InStoreAvailability {
-			inStock = r < 0.1
+			// Product not typically in stores - very rare to find
+			inStock = roll < 0.1
 			lowStock = false
+		} else {
+			// Normal product - 50% in stock, 20% low stock, 30% out of stock
+			inStock = roll < 0.7
+			lowStock = roll >= 0.5 && roll < 0.7
 		}
 
 		availability = append(availability, StoreAvailability{
-			StoreID:        store.StoreID,
+			StoreID:        storeID,
 			StoreName:      store.Name,
 			City:           store.City,
 			State:          store.State,
 			Distance:       store.Distance,
-			InStock:        inStock || lowStock, // Low stock still counts as in stock
+			InStock:        inStock,
 			LowStock:       lowStock,
-			PickupEligible: inStock || lowStock,
+			PickupEligible: inStock,
 		})
 	}
 
